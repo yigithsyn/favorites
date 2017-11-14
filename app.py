@@ -133,21 +133,19 @@ def registerNgrokTunnel():
     print(r.json())
   else:
     if "url" in r.json().keys():
-      ngrokAuth["url"] = r.json()["url"]
-      table.update(ngrokAuth, doc_ids=[1])
-    mlabr = requests.get(
-        "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-    if mlabr.status_code != 200:
-      print(
-          {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-    else:
-      mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                           mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+      mlabr = requests.get(
+          "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
       if mlabr.status_code != 200:
         print(
             {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
       else:
-        print(r.json())
+        mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
+                            mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+        if mlabr.status_code != 200:
+          print(
+              {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+        else:
+          print(r.json())
 
 
 try:
