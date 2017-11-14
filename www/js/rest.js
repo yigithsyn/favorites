@@ -1,5 +1,16 @@
 var REST = {
-  ulr: "http://127.0.0.1:5000",
+  url: "http://127.0.0.1:5000",
+  registerURL: function (callback = function () { }) {
+    REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
+      if (!res.error) {
+        REST.url = res[0].url
+        callback(REST.url)
+      }
+      else{
+        callback(res)
+      }
+    })
+  },
   TinyDB: {
     listTables: function (callback = function () { }) {
       webix.ajax().get(REST.url + "/tinydb", {
@@ -15,18 +26,23 @@ var REST = {
   mLab: {
     apiKey: "Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d",
     listItems: function (database, collection, query = {}, count = false, callback = function () { }) {
-      webix.ajax().get("https://api.mlab.com/api/1/databases/" + database + "/collections/" + collection, { apiKey: REST.mLab.apiKey, q: query, c: count }, function (t, d, x) {
-        var items = d.json()
-        async.eachSeries(items,
-          function (item, callback) {
-            item.id = item._id.$oid
-            delete item._id
-            callback()
-          },
-          function (err) {
-            if (err) console.log(err)
-            else callback(items)
-          })
+      webix.ajax().get("https://api.mlab.com/api/1/databases/" + database + "/collections/" + collection, { apiKey: REST.mLab.apiKey, q: query, c: count }, {
+        error: function (t, d, x) {
+          callback({ error: { type: "server", msg: d.json() } })
+        },
+        success: function (t, d, x) {
+          var items = d.json()
+          async.eachSeries(items,
+            function (item, callback) {
+              item.id = item._id.$oid
+              delete item._id
+              callback()
+            },
+            function (err) {
+              if (err) console.log(err)
+              else callback(items)
+            })
+        }
       })
     },
   }

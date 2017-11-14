@@ -1,6 +1,5 @@
 // Database
 var databaseRows = [
-  { id: "mlabApiKey", view: "text", label: "mLab API Key", labelWidth: 100, value: REST.mLab.apiKey },
   { id: "databaseTree", view: "tree", select: true, data: [], gravity: 1 },
   {
     id: "databaseItemViews", fitBiggest: true, gravity:1,

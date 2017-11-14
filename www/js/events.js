@@ -1,6 +1,20 @@
 setTimeout(function () {
-  REST.mLab.listItems("hsyn","ngrok", {}, false, function(res){
-    REST.url = res[0].url
+
+  REST.registerURL(function (res) {
+    REST.TinyDB.listTables(function (tables) {
+      var data = []
+      async.eachSeries(tables,
+        function (table, callback) {
+          data.push({ value: table, data: [] })
+          callback()
+        },
+        function (err) {
+          $$("databaseTree").unselectAll()
+          $$("databaseTree").clearAll()
+          $$("databaseTree").parse(data)
+          $$("databaseTree").openAll()
+        })
+    })
   })
 
   // Toolbar
@@ -37,8 +51,8 @@ setTimeout(function () {
   $$("databaseItemList").attachEvent("onSelectChange", function (id) {
     var obj = $$("databaseItemList").getItem(id)
     new PrettyJSON.view.Node({
-      el:$$("result").getNode(),
-      data:obj
+      el: $$("result").getNode(),
+      data: obj
     });
     // console.log(obj)
     $$('databaseItemDetails').show();
@@ -46,28 +60,6 @@ setTimeout(function () {
 
   // Manuel events
   $$("sidelist").select("mlab")
-  REST.mLab.listDatabases(function (databases) {
-    var data = []
-    async.eachSeries(databases,
-      function (database, callback) {
-        data.push({ value: database, data: [] })
-        REST.mLab.listCollections(database, function (collections) {
-          async.eachSeries(collections,
-            function (collection, callback) {
-              data[data.length - 1].data.push({ value: collection })
-              callback()
-            },
-            function (err) {
-              callback()
-            })
-        })
-      },
-      function (err) {
-        $$("databaseTree").unselectAll()
-        $$("databaseTree").clearAll()
-        $$("databaseTree").parse(data)
-        $$("databaseTree").openAll()
-      })
-  })
+
 
 }, 1000)
