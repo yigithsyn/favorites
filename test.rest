@@ -1,0 +1,40 @@
+####################################
+# /TinyDB
+####################################
+GET http://127.0.0.1:5000/tinydb/ngrok
+
+##################
+POST http://127.0.0.1:5000/tinydb/test
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+##################
+GET http://127.0.0.1:5000/tinydb/ngrok/1
+
+
+##################
+DELETE http://127.0.0.1:5000/tinydb/test/3
+content-type: application/json
+
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+
+####################################
+# Ngrok
+####################################
+POST http://127.0.0.1:3000/ngrok
+content-type: application/json
+
+{
+  "authtoken": "73C1ae7cc3uQWWr1Lx3UB_7PgR3q3dCxcfmD4FqpebF",
+  "addr": 5000
+}
+
+####################################
+GET http://127.0.0.1:5000/ngrok

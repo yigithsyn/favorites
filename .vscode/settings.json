@@ -1,0 +1,17 @@
+{
+  "files.autoSave": "afterDelay",
+  "git.enableSmartCommit": true,
+  "files.autoSaveDelay": 5000,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "python.linting.pylintCategorySeverity.convention": "Hint",
+  "python.linting.pylintCategorySeverity.refactor": "Hint",
+  "python.linting.pylintArgs": [
+    "--indent-string=\"  \"",
+    "--disable=W0703"
+  ],
+  "python.formatting.autopep8Args": [
+    "--indent-size=2",
+    "--ignore=E302"
+  ]
+}
