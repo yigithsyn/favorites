@@ -1,4 +1,8 @@
 setTimeout(function () {
+  REST.mLab.listItems("hsyn","ngrok", {}, false, function(res){
+    REST.url = res[0].url
+  })
+
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
     if ($$("sidemenu").config.hidden) $$("sidemenu").show();

@@ -29,6 +29,11 @@ def static_proxy(path):
 
 tinydbDatabase = str(os.getcwd()) + "\\data\\db.json"
 
+class TinyDB(Resource):
+  def get(self):
+    db = tinydb(tinydbDatabase)
+    return list(db.tables())
+
 class TinyDB_Table(Resource):
   def get(self, table):
     db = tinydb(tinydbDatabase)
@@ -45,73 +50,34 @@ class TinyDB_Table(Resource):
     return table.insert(request.json)
 
 class TinyDB_Item(Resource):
-  def get(self, table, id):
+  def get(self, table, doc_id):
     db = tinydb(tinydbDatabase)
     table = db.table(table)
     try:
       item = table.get(doc_id=int(id))
-      item["id"] = id
+      item["id"] = doc_id
       return item
     except Exception:
       return {"error": {"type": "api", "msg": "TinyDB_Item: GET\n" + str(traceback.format_exc())}}
 
-  def delete(self, table, id):
+  def delete(self, table, doc_id):
     db = tinydb(tinydbDatabase)
     table = db.table(table)
     try:
-      table.remove(doc_ids=[int(id)])
+      table.remove(doc_ids=[int(doc_id)])
       return {}
     except Exception:
       return {"error": {"type": "api", "msg": "TinyDB_Item: DEL\n" + str(traceback.format_exc())}}
 
 
+api.add_resource(TinyDB, '/tinydb')
 api.add_resource(TinyDB_Table, '/tinydb/<table>')
 api.add_resource(TinyDB_Item, '/tinydb/<table>/<id>')
 # =============================================================================
 # Node.js App
 # =============================================================================
 
-node = Popen(['node', 'app.js'], shell=True)
 
-def cleanup():
-  time.sleep(1)
-  node.kill()
-  db = tinydb(tinydbDatabase)
-  table = db.table("ngrok")
-  ngrokAuth = table.get(doc_id=1)
-  ngrokAuth["url"] = ""
-  table.update(ngrokAuth, doc_ids=[1])
-  print('Node.js app stopped.')
-
-class Ngrok(Resource):
-  def get(self):
-    db = tinydb(tinydbDatabase)
-    table = db.table("ngrok")
-    ngrokAuth = table.get(doc_id=1)
-    if ngrokAuth["url"] != "":
-      return {"url": ngrokAuth["url"]}
-    else:
-      r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
-      if r.status_code != 200:
-        return {"error": {"type": "api", "msg": "Connection to Node.js app failed."}}
-      elif "error" in r.json().keys():
-        return r.json()
-      else:
-        if "url" in r.json().keys():
-          ngrokAuth["url"] = r.json()["url"]
-          table.update(ngrokAuth, doc_ids=[1])
-        mlab1 = requests.get("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-        if mlab1.status_code == 200:
-          item = mlab1.json()[0]
-         # print(item)
-          item = r.json()
-          mlab2 = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/"+mlab1.json()[0]["_id"]["$oid"]+"?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
-          # print(mlab2.text)
-        return r.json()
-
-
-atexit.register(cleanup)
-api.add_resource(Ngrok, '/ngrok')
 # =============================================================================
 # File Upload
 # =============================================================================
@@ -151,6 +117,52 @@ class Upload(Resource):
     return "Ok"
 
 
-if __name__ == '__main__':
-  app.run(debug=True, extra_files=["app.js"])
-  # app.run()
+# Node.js app
+node = Popen(['node', 'app.js'], shell=True)
+
+# Ngrok tunnelling service register
+time.sleep(3)
+def registerNgrokTunnel():
+  db = tinydb(tinydbDatabase)
+  table = db.table("ngrok")
+  ngrokAuth = table.get(doc_id=1)
+  r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
+  if r.status_code != 200:
+    print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
+  elif "error" in r.json().keys():
+    print(r.json())
+  else:
+    if "url" in r.json().keys():
+      ngrokAuth["url"] = r.json()["url"]
+      table.update(ngrokAuth, doc_ids=[1])
+    mlabr = requests.get(
+        "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
+    if mlabr.status_code != 200:
+      print(
+          {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+    else:
+      mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
+                           mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+      if mlabr.status_code != 200:
+        print(
+            {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+      else:
+        print(r.json())
+
+
+try:
+  registerNgrokTunnel()
+except Exception:
+  print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
+
+# At exit cleaning
+def cleanup():
+  time.sleep(1)
+  node.kill()
+  print('Node.js app stopped.')
+
+
+atexit.register(cleanup)
+
+# Flask app
+app.run(debug=True, extra_files=["app.js"])
