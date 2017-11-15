@@ -1,7 +1,5 @@
 setTimeout(function () {
 
-
-
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
     $$("multiview").setValue("home")
@@ -17,10 +15,9 @@ setTimeout(function () {
   $$("databaseTree").attachEvent("onSelectChange", function (id) {
     var item = $$("databaseTree").getItem(id)
     // console.log(item)
-    if (item.$level === 2) {
-      var collection = item.value
-      var database = $$("databaseTree").getItem(item.$parent).value
-      REST.mLab.listItems(database, collection, {}, false, function (items) {
+    if (item.$level === 1) {
+      REST.TinyDB.listItems(item.value, function (items) {
+        console.log(items)
         $$("databaseItemViews").back()
         $$("databaseItemList").blockEvent()
         $$("databaseItemList").unselectAll()
@@ -58,7 +55,7 @@ setTimeout(function () {
         })
     })
   })
-  $$("multiview").setValue("home")
+  $$("multiview").setValue("tinydb")
   // $$("sidelist").select("home")
 
 

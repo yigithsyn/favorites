@@ -22,6 +22,16 @@ var REST = {
         }
       })
     },
+    listItems: function (table, callback = function () { }) {
+      webix.ajax().get(REST.url + "/tinydb/"+table, {
+        error: function (t, d, x) {
+          callback({ error: { type: "server", msg: d.json() } })
+        },
+        success: function (t, d, x) {
+          callback(d.json())
+        }
+      })
+    },
   },
   mLab: {
     apiKey: "Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d",

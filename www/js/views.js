@@ -35,6 +35,6 @@ var winmenuData = [
 // Multiview
 var views = [
   { id: "home", value: "Home", view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
-  { id: "database", view: "layout", value: "Database", icon: "database", rows: databaseRows },
+  { id: "tinydb", view: "layout", value: "Database", icon: "database", rows: databaseRows },
   { id: "onedrive", value: "Storage", icon: "cloud", template: "Cloud" }
 ]
