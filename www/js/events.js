@@ -1,34 +1,17 @@
 setTimeout(function () {
 
-  REST.registerURL(function (res) {
-    REST.TinyDB.listTables(function (tables) {
-      var data = []
-      async.eachSeries(tables,
-        function (table, callback) {
-          data.push({ value: table, data: [] })
-          callback()
-        },
-        function (err) {
-          $$("databaseTree").unselectAll()
-          $$("databaseTree").clearAll()
-          $$("databaseTree").parse(data)
-          $$("databaseTree").openAll()
-        })
-    })
-  })
+
 
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
-    if ($$("sidemenu").config.hidden) $$("sidemenu").show();
-    else $$("sidemenu").hide();
+    $$("multiview").setValue("home")
   })
 
-  // Side Menu
-  $$("sidelist").attachEvent("onSelectChange", function (id) {
-    $$("multiview").setValue(id)
-    $$("sidemenu").hide()
-    $$("headbarLabel").setValue("KAMUS > " + views.filter(function (item) { return item.id == id })[0].value)
-  })
+  // Multiview
+  $$("home").attachEvent("onItemClick", function (id) {
+    $$("multiview").setValue(this.getItem(id).id)
+    $$("headbarLabel").setValue("KAMUS > " + views.filter(function (item) { return item.id == id })[0].value) 
+  });
 
   // Database
   $$("databaseTree").attachEvent("onSelectChange", function (id) {
@@ -59,7 +42,24 @@ setTimeout(function () {
   })
 
   // Manuel events
-  $$("sidelist").select("mlab")
+  REST.registerURL(function (res) {
+    REST.TinyDB.listTables(function (tables) {
+      var data = []
+      async.eachSeries(tables,
+        function (table, callback) {
+          data.push({ value: table, data: [] })
+          callback()
+        },
+        function (err) {
+          $$("databaseTree").unselectAll()
+          $$("databaseTree").clearAll()
+          $$("databaseTree").parse(data)
+          $$("databaseTree").openAll()
+        })
+    })
+  })
+  $$("multiview").setValue("home")
+  // $$("sidelist").select("home")
 
 
 }, 1000)

@@ -62,6 +62,8 @@
   <!-- Webix -->
   <script src="js/webix/codebase/webix.js" type="text/javascript"></script>
   <link rel="stylesheet" type="text/css" href="js/webix/codebase/webix.css">
+  <script src="js/webix-components/winmenu/winmenu.js" type="text/javascript"></script>
+  <link rel="stylesheet" type="text/css" href="js/webix-components/winmenu/winmenu.css">
   
   <!-- Async -->
   <script src="js/async/dist/async.min.js" type="text/javascript"></script>
@@ -86,7 +88,7 @@
       id: "toolbar",
       view: "toolbar",
       elements: [
-        { id: "sidemenuicon", view: "icon", icon: "bars" },
+        { id: "sidemenuicon", view: "icon", icon: "home" },
         { id: "headbarLabel", view: "label", label: "KAMUS" },
       ]
     }
@@ -115,31 +117,6 @@
       $$("body").resize()
     }
 
-
-    // Sidemenu
-    var sidemenu = webix.ui({
-      id: "sidemenu",
-      view: "sidemenu",
-      width: 200,
-      position: "left",
-      state: function (state) {
-        // get the toolbar's height
-        var toolbarHeight = $$("toolbar").$height;
-        // increase the 'top' property
-        state.top = toolbarHeight;
-        // decrease the 'height' property
-        state.height -= toolbarHeight;
-      },
-      body: {
-        id: "sidelist",
-        view: "list",
-        borderless: true,
-        scroll: false,
-        template: "<span class='webix_icon fa-#icon#'></span> #value#",
-        select: true,
-        data: views,
-      }
-    })
   </script>
 
 </body>
