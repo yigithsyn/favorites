@@ -14,10 +14,8 @@ setTimeout(function () {
   // Database
   $$("databaseTree").attachEvent("onSelectChange", function (id) {
     var item = $$("databaseTree").getItem(id)
-    // console.log(item)
     if (item.$level === 1) {
       REST.TinyDB.listItems(item.value, function (items) {
-        console.log(items)
         $$("databaseItemViews").back()
         $$("databaseItemList").blockEvent()
         $$("databaseItemList").unselectAll()
