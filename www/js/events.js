@@ -3,12 +3,13 @@ setTimeout(function () {
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
     $$("multiview").setValue("home")
+    $$("headbarLabel").setValue("KAMUS > Ana Sayfa") 
   })
 
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
     $$("multiview").setValue(this.getItem(id).id)
-    $$("headbarLabel").setValue("KAMUS > " + views.filter(function (item) { return item.id == id })[0].value) 
+    $$("headbarLabel").setValue("KAMUS > " + this.getItem(id).value) 
   });
 
   // Database
@@ -53,7 +54,7 @@ setTimeout(function () {
         })
     })
   })
-  $$("multiview").setValue("tinydb")
+  $$("multiview").setValue("database")
   // $$("sidelist").select("home")
 
 
