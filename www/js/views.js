@@ -69,7 +69,11 @@ var stockRows = [
       type: "side"
     }
   },
-  { view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth:true, align:"center"}
+  cols:[
+    {},
+    { view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth:true, align:"center"},
+    {}
+  ]
 ]
 function img(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
