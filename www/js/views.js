@@ -37,36 +37,46 @@ var databaseRows = [
 
 // stock
 var images = [
-  {id:1, src:"img/database_100x100_white.png", title: "Image 1"},
-  {id:2, src:"img/barcode_100x100_white.png", title: "Image 2"},
-  {id:3, src:"imgs/image003.jpg", title: "Image 3"},
-  {id:4, src:"imgs/image004.jpg", title: "Image 4"},
-  {id:5, src:"imgs/image005.jpg", title: "Image 5"},
-  {id:6, src:"imgs/image006.jpg", title: "Image 6"}
+  { id: 1, src: "img/database_100x100_white.png", title: "Image 1" },
+  { id: 2, src: "img/barcode_100x100_white.png", title: "Image 2" },
+  { id: 3, src: "imgs/image003.jpg", title: "Image 3" },
+  { id: 4, src: "imgs/image004.jpg", title: "Image 4" },
+  { id: 5, src: "imgs/image005.jpg", title: "Image 5" },
+  { id: 6, src: "imgs/image006.jpg", title: "Image 6" }
 ];
+var stockData = [
+  { no: 1, serial: "wer1", name: "demirbaş1", model: "model1" },
+  { no: 2, serial: "wer2", name: "demirbaş2", model: "model2" }
+]
 var stockRows = [
-  {id: "stockList", view: "list", select: true, template: "#no# &nbsp&nbsp #value#"},
-  {id: "stockItemDetails", view: "form", rows:[
-    {id: "stockItemNo", view:"text", label: "Demirbaş numarası: ", labelWidth: 150, readonly: true},
-    {id: "stockItemSerial", view:"text", label: "Seri numarası: ", labelWidth: 150, readonly: true},
-    {id: "stockItemName", view:"text", label: "Demirbaş adı: ", labelWidth: 150, readonly: true},
-    {id: "stockItemModel", view:"text", label: "Demirbaş marka: ", labelWidth: 150, readonly: true},
-  ]},
+  { id: "stockList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: stockData },
   {
-    view:"carousel",
-    id:"carousel1",
-    cols:[
-      { css: "image", template:img, data:{src:"img/database_100x100_white.png", title: "Image 1"} },
-      { css: "image", template:img, data:{src:"img/database_100x100_white.png", title: "Image 2"} },
+    id: "stockItemDetails", view: "form", rows: [
+      { name: "no", view: "text", label: "Demirbaş numarası: ", labelWidth: 150, readonly: true },
+      { name: "serial", view: "text", label: "Seri numarası: ", labelWidth: 150, readonly: true },
+      { name: "name", view: "text", label: "Demirbaş adı: ", labelWidth: 150, readonly: true },
+      { name: "model", view: "text", label: "Demirbaş marka: ", labelWidth: 150, readonly: true },
+    ]
+  },
+  {
+    view: "carousel",
+    id: "carousel1",
+    cols: [
+      { css: "image", template: img, data: { src: "img/database_100x100_white.png", title: "Image 1" } },
+      { css: "image", template: img, data: { src: "img/database_100x100_white.png", title: "Image 2" } },
     ],
-    navigation:{
+    navigation: {
       type: "side"
     }
   },
-  { view:"button", type:"icon", icon:"plus", label:"Ekle", labelAlign:"center" }
+  { view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth:true, align:"center"}
 ]
-function img(obj){
-  return '<img src="'+obj.src+'" class="content" align="middle" ondragstart="return false"/>'
+function img(obj) {
+  // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
+  return '<div style="width:100%; height:100%; text-align: center; padding: 0; margin: 0;">' +
+    '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
+    '<img style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
+    '</div>'
 }
 // Multiview
 var views = [

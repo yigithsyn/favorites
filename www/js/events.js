@@ -37,6 +37,9 @@ setTimeout(function () {
     $$('databaseItemDetails').show();
   })
 
+  // Stock
+  $$("stockItemDetails").bind($$("stockList"))
+
   // Manuel events
   REST.registerURL(function (res) {
     REST.TinyDB.listTables(function (tables) {
@@ -54,7 +57,7 @@ setTimeout(function () {
         })
     })
   })
-  $$("multiview").setValue("database")
+  $$("multiview").setValue("stock")
   // $$("sidelist").select("home")
 
 
