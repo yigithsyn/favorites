@@ -1,7 +1,8 @@
 // home
 var winmenuData = [
   { id: "database", value: "Veritabanı", img: "img/database_100x100_white.png", color: "#008ba0", x: 1, y: 1, width: 1 },
-  { id: "stock", value: "Demirbaş", img: "img/barcode_100x100_white.png", color: "#535353", x: 2, y: 1, width: 1 },
+  { id: "inventory", value: "Demirbaş", img: "img/barcode_100x100_white.png", color: "#535353", x: 2, y: 1, width: 1 },
+  { id: "jupyternb", value: "JupyterNB", img: "img/jupyternb_white_100x100.png", color: "#603cbb", x: 1, y: 2, width: 1 },
   // { value: "Finance", img: "icons/03.png", color: "#008ba0", x: 1, y: 1, width: 2 },
   // { value: "Settings", img: "icons/06.png", color: "#603cbb", x: 1, y: 2, width: 2 },
   // { value: "People", img: "icons/34.png", color: "#d9532c", x: 1, y: 3, width: 2 },
@@ -35,34 +36,27 @@ var databaseRows = [
   },
 ]
 
-// stock
-var images = [
-  { id: 1, src: "img/database_100x100_white.png", title: "Image 1" },
-  { id: 2, src: "img/barcode_100x100_white.png", title: "Image 2" },
-  { id: 3, src: "imgs/image003.jpg", title: "Image 3" },
-  { id: 4, src: "imgs/image004.jpg", title: "Image 4" },
-  { id: 5, src: "imgs/image005.jpg", title: "Image 5" },
-  { id: 6, src: "imgs/image006.jpg", title: "Image 6" }
-];
-var stockData = [
+// Inventory
+var inventoryData = [
   { no: 1, serial: "wer1", name: "demirbaş1", model: "model1" },
   { no: 2, serial: "wer2", name: "demirbaş2", model: "model2" }
 ]
-var stockRows = [
-  { id: "stockList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: stockData },
+var inventoryItemDetails = []
+var inventoryRows = [
+  { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: inventoryData },
   {
-    id: "stockItemDetails", view: "form", rows: [
-      { name: "no", view: "text", label: "Demirbaş numarası: ", labelWidth: 150, readonly: true },
-      { name: "serial", view: "text", label: "Seri numarası: ", labelWidth: 150, readonly: true },
-      { name: "name", view: "text", label: "Demirbaş adı: ", labelWidth: 150, readonly: true },
-      { name: "model", view: "text", label: "Demirbaş marka: ", labelWidth: 150, readonly: true },
+    id: "inventoryItemDetails", view: "form", readonly: true, rows: [
+      { name: "no", view: "text", label: "Demirbaş numarası ", labelWidth: 150},
+      { name: "serial", view: "text", label: "Seri numarası ", labelWidth: 150, readonly: true },
+      { name: "name", view: "text", label: "Demirbaş adı ", labelWidth: 150, readonly: true },
+      { name: "model", view: "text", label: "Demirbaş marka ", labelWidth: 150, readonly: true },
     ]
   },
   {
     view: "carousel",
     id: "carousel1",
+    height: 180,
     cols: [
-      { css: "image", template: img, data: { src: "img/database_100x100_white.png", title: "Image 1" } },
       { css: "image", template: img, data: { src: "img/database_100x100_white.png", title: "Image 2" } },
     ],
     navigation: {
@@ -88,7 +82,8 @@ function img(obj) {
 var views = [
   { id: "home", value: "Ana Sayfa", view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
   { id: "database", view: "layout", value: "Veritabanı", icon: "database", rows: databaseRows },
-  { id: "stock", value: "Demirbaş", icon: "barcode", rows: stockRows },
-  { id: "storage", value: "Depolama", icon: "cloud", template: "Cloud" }
+  { id: "inventory", value: "Demirbaş", icon: "barcode", rows: inventoryRows },
+  { id: "storage", value: "Depolama", icon: "cloud", template: "Cloud" },
+  { id: "jupyternb", value: "JupyterNB", view:"iframe", src: ""}
 ]
 

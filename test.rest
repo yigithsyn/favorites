@@ -17,6 +17,14 @@ content-type: application/json
 }
 
 ##################
+POST http://127.0.0.1:5000/tinydb/ngrok
+content-type: application/json
+
+{
+    "authtoken": "73C1ae7cc3uQWWr1Lx3UB_7PgR3q3dCxcfmD4FqpebF",
+    "addr": 8888
+}
+##################
 GET http://127.0.0.1:5000/tinydb/ngrok/1
 
 

@@ -37,11 +37,12 @@ setTimeout(function () {
     $$('databaseItemDetails').show();
   })
 
-  // Stock
-  $$("stockItemDetails").bind($$("stockList"))
+  // inventory
+  $$("inventoryItemDetails").bind($$("inventoryList"))
 
   // Manuel events
   REST.registerURL(function (res) {
+    $$("jupyternb").load(REST.jupyternb_url)
     REST.TinyDB.listTables(function (tables) {
       var data = []
       async.eachSeries(tables,
@@ -57,7 +58,7 @@ setTimeout(function () {
         })
     })
   })
-  $$("multiview").setValue("stock")
+  $$("multiview").setValue("jupyternb")
   // $$("sidelist").select("home")
 
 
