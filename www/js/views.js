@@ -41,32 +41,20 @@ var inventoryData = [
   { no: 1, serial: "wer1", name: "demirbaş1", model: "model1" },
   { no: 2, serial: "wer2", name: "demirbaş2", model: "model2" }
 ]
-var inventoryItemDetails = []
+var inventoryItemDetails = [
+  { name: "no", view: "text", label: "Demirbaş numarası ", labelWidth: 150 },
+  { name: "serial", view: "text", label: "Seri numarası ", labelWidth: 150, readonly: true },
+  { name: "name", view: "text", label: "Demirbaş adı ", labelWidth: 150, readonly: true },
+  { name: "model", view: "text", label: "Demirbaş marka ", labelWidth: 150, readonly: true }
+]
 var inventoryRows = [
   { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: inventoryData },
-  {
-    id: "inventoryItemDetails", view: "form", readonly: true, rows: [
-      { name: "no", view: "text", label: "Demirbaş numarası ", labelWidth: 150},
-      { name: "serial", view: "text", label: "Seri numarası ", labelWidth: 150, readonly: true },
-      { name: "name", view: "text", label: "Demirbaş adı ", labelWidth: 150, readonly: true },
-      { name: "model", view: "text", label: "Demirbaş marka ", labelWidth: 150, readonly: true },
-    ]
-  },
-  {
-    view: "carousel",
-    id: "carousel1",
-    height: 180,
-    cols: [
-      { css: "image", template: img, data: { src: "img/database_100x100_white.png", title: "Image 2" } },
-    ],
-    navigation: {
-      type: "side"
-    }
-  },
+  { id: "inventoryItemDetails", view: "form", readonly: true, rows: inventoryItemDetails },
+  { view: "carousel", id: "inventoryItemImages", height: 180, navigation: { type: "side" } },
   {
     cols: [
       {},
-      { view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },
+      { id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },
       {}
     ]
   }
@@ -78,12 +66,44 @@ function img(obj) {
     '<img style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
     '</div>'
 }
+
+var inventoryItemAdd = {
+  id: "inventoryItemAdd", view: "window", head: "Demirbaş ekle", modal: true,
+  head: {
+    view: "toolbar", margin: -4, cols: [
+      { view: "label", label: "Demirbaş ekle" },
+      { view: "icon", icon: "times-circle", click: "$$('inventoryItemAdd').close();" }
+    ]
+  },
+  body: {
+    rows: [
+      {template:"Deneme"}
+      // {
+      //   id: "inventoryItemImageUpload", view: "uploader", value: 'Resim ekle',
+      //   name: "files",
+      //   link: "mylist", upload: REST.url + "/upload/Demirbaş"
+      // },
+      // {
+      //   view: "list", id: "mylist", type: "uploader",
+      //   autoheight: true, borderless: true
+      // },
+    ]
+  },
+  position: function (state) {
+    state.left = 0; //fixed values
+    state.top = 47;
+    state.width = $$("body").$height / 2; //relative values
+    state.height += 0;
+  }
+}
+// var inventoryItemAdd = webix.ui().show()
+
 // Multiview
 var views = [
   { id: "home", value: "Ana Sayfa", view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
   { id: "database", view: "layout", value: "Veritabanı", icon: "database", rows: databaseRows },
   { id: "inventory", value: "Demirbaş", icon: "barcode", rows: inventoryRows },
   { id: "storage", value: "Depolama", icon: "cloud", template: "Cloud" },
-  { id: "jupyternb", value: "JupyterNB", view:"iframe", src: ""}
+  { id: "jupyternb", value: "JupyterNB", view: "iframe", src: "" }
 ]
 

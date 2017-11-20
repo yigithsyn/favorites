@@ -3,13 +3,13 @@ setTimeout(function () {
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
     $$("multiview").setValue("home")
-    $$("headbarLabel").setValue("KAMUS > Ana Sayfa") 
+    $$("headbarLabel").setValue("KAMUS > Ana Sayfa")
   })
 
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
     $$("multiview").setValue(this.getItem(id).id)
-    $$("headbarLabel").setValue("KAMUS > " + this.getItem(id).value) 
+    $$("headbarLabel").setValue("KAMUS > " + this.getItem(id).value)
   });
 
   // Database
@@ -37,8 +37,26 @@ setTimeout(function () {
     $$('databaseItemDetails').show();
   })
 
-  // inventory
+  // Inventory
   $$("inventoryItemDetails").bind($$("inventoryList"))
+  $$("inventoryItemAddButton").attachEvent("onItemClick", function () {
+    var formItems = []
+    inventoryItemDetails.forEach(function (item) {
+      delete item.readonly
+      formItems.push(item)
+    })
+    var form = { id: "inventoryItemAddDetails", view: "form", readonly: true, rows: inventoryItemDetails }
+    inventoryItemAdd.body.rows = [form]
+    webix.ui(
+      inventoryItemAdd
+    ).show()
+  
+    // $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
+    //   console.log(response)
+    // });
+    // inventoryItemAdd.show()
+  })
+  
 
   // Manuel events
   REST.registerURL(function (res) {
@@ -58,7 +76,8 @@ setTimeout(function () {
         })
     })
   })
-  $$("multiview").setValue("jupyternb")
+  $$("multiview").setValue("inventory")
+  // $$("multiview").setValue("jupyternb")
   // $$("sidelist").select("home")
 
 

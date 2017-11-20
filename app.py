@@ -82,19 +82,18 @@ api.add_resource(TinyDB_Item, '/tinydb/<table>/<id>')
 # =============================================================================
 # File Upload
 # =============================================================================
-
 UPLOAD_FOLDER = 'temp'
 # ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
-try:
-  os.mkdir(UPLOAD_FOLDER)
-except OSError:
-  pass
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class Upload(Resource):
-  def post(self):
+  def post(self, directory):
+    try:
+      os.mkdir("data/" + directory)
+    except OSError:
+      pass
     print(request.files)
     # check if the post request has the file part
     if 'file' in request.files:
@@ -110,16 +109,20 @@ class Upload(Resource):
       return redirect(request.url)
     # if file and allowed_file(file.filename):
     if file:
-      filename = secure_filename(file.filename)
-      file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-      return {"status": 'server', "filename": filename}
+      filename = str(time.time()).replace(".", "") + \
+          "-" + secure_filename(file.filename)
+      file.save(os.path.join("data/" + directory, filename))
+      return filename
 
   def get(self):
     return "Ok"
 
 
+api.add_resource(Upload, '/upload/<directory>')
+
 # Jupyter Notebook app
-jupyternb = Popen(['jupyter', 'notebook', "--config", "jupyter_notebook_config.py"], shell=True)
+jupyternb = Popen(['jupyter', 'notebook', "--config",
+                   "jupyter_notebook_config.py"], shell=True)
 
 # Node.js app
 node = Popen(['node', 'app.js'], shell=True)
@@ -129,7 +132,7 @@ time.sleep(3)
 def registerNgrokTunnel():
   db = tinydb(tinydbDatabase)
   table = db.table("ngrok")
-  ## Python app
+  # Python app
   ngrokAuth = table.get(doc_id=1)
   r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
   if r.status_code != 200:
@@ -145,13 +148,13 @@ def registerNgrokTunnel():
             {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
       else:
         mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                            mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+                             mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
         if mlabr.status_code != 200:
           print(
               {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
         else:
           print(r.json())
-  ## Jupyter Notebook app
+  # Jupyter Notebook app
   ngrokAuth = table.get(doc_id=2)
   r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
   if r.status_code != 200:
@@ -171,7 +174,7 @@ def registerNgrokTunnel():
         item["token"] = server["token"]
         print(item)
         mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                            mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
+                             mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
         if mlabr.status_code != 200:
           print(
               {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
