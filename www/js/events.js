@@ -45,7 +45,7 @@ setTimeout(function () {
     var item = $$("inventoryList").getItem(id)
     ids = []
     // $$("inventoryItemImages").getChildViews().forEach(function (item) { prevItems.push(item.nc[0].id) })
-    item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: "/download/Demirbaş/" + item } })) })
+    item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: REST.url + "/download/Demirbaş/" + item } })) })
     $$("inventoryItemImages").setActiveIndex(0);
     if (ids.indexOf($$("inventoryItemImages").getActiveId()) == -1) {
       $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
