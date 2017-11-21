@@ -28,7 +28,7 @@ GET http://127.0.0.1:5000/tinydb/ngrok/1
 
 
 ##################
-DELETE http://127.0.0.1:5000/tinydb/inventory/3
+DELETE http://127.0.0.1:5000/tinydb/inventory/4
 
 ####################################
 # Ngrok

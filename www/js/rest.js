@@ -36,7 +36,6 @@ var REST = {
     },
     insertItem: function (table, item, callback = function () { }) {
       webix.ajax().headers({ "Content-type": "application/json" }).post(REST.url + "/tinydb/" + table, JSON.stringify(item), function (t, d, x) {
-        console.log(d.json())
         callback()
       })
     },
