@@ -8,7 +8,7 @@ var REST = {
         REST.jupyternb_url = res[1].url + "?token=" + res[1].token
         callback(REST.url)
       }
-      else{
+      else {
         callback(res)
       }
     })
@@ -25,13 +25,19 @@ var REST = {
       })
     },
     listItems: function (table, callback = function () { }) {
-      webix.ajax().get(REST.url + "/tinydb/"+table, {
+      webix.ajax().get(REST.url + "/tinydb/" + table, {
         error: function (t, d, x) {
           callback({ error: { type: "server", msg: d.json() } })
         },
         success: function (t, d, x) {
           callback(d.json())
         }
+      })
+    },
+    insertItem: function (table, item, callback = function () { }) {
+      webix.ajax().headers({ "Content-type": "application/json" }).post(REST.url + "/tinydb/" + table, JSON.stringify(item), function (t, d, x) {
+        console.log(d.json())
+        callback()
       })
     },
   },

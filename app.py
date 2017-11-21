@@ -5,7 +5,7 @@ import time
 from subprocess import Popen
 import atexit
 # Installed modules
-from flask import Flask, request, redirect, send_from_directory
+from flask import Flask, request, redirect, send_from_directory, send_file
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
@@ -74,19 +74,13 @@ class TinyDB_Item(Resource):
 api.add_resource(TinyDB, '/tinydb')
 api.add_resource(TinyDB_Table, '/tinydb/<table>')
 api.add_resource(TinyDB_Item, '/tinydb/<table>/<id>')
-# =============================================================================
-# Node.js App
-# =============================================================================
-
 
 # =============================================================================
 # File Upload
 # =============================================================================
-UPLOAD_FOLDER = 'temp'
+# UPLOAD_FOLDER = 'temp'
 # ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
-
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 class Upload(Resource):
   def post(self, directory):
@@ -119,6 +113,16 @@ class Upload(Resource):
 
 
 api.add_resource(Upload, '/upload/<directory>')
+
+# =============================================================================
+# File Download
+# =============================================================================
+class Download(Resource):
+  def get(self, directory, file):
+    return send_file("data/" + directory + "/" + file)
+
+
+api.add_resource(Download, '/download/<directory>/<file>')
 
 # Jupyter Notebook app
 jupyternb = Popen(['jupyter', 'notebook', "--config",

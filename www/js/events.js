@@ -38,6 +38,32 @@ setTimeout(function () {
   })
 
   // Inventory
+  $$("inventoryList").attachEvent("onSelectChange", function (id) {
+    var index = $$("inventoryItemImages").getActiveIndex()
+    var currIndex = index
+    var lastIndex = 999
+    var item = $$("inventoryList").getItem(id)
+    ids = []
+    // $$("inventoryItemImages").getChildViews().forEach(function (item) { prevItems.push(item.nc[0].id) })
+    item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: "/download/Demirbaş/" + item } })) })
+    $$("inventoryItemImages").setActiveIndex(0);
+    if (ids.indexOf($$("inventoryItemImages").getActiveId()) == -1) {
+      $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
+    }
+    _.range(10).forEach(function (item) {
+      // console.log(ids)
+      // console.log(String($$("inventoryItemImages").getActiveId()))
+      if (ids.indexOf(String($$("inventoryItemImages").getActiveId())) === -1) {
+        $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
+      }
+      $$("inventoryItemImages").showNext();
+    })
+    if (ids.indexOf(String($$("inventoryItemImages").getActiveId())) === -1) {
+      $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
+    }
+    $$("inventoryItemImages").setActiveIndex(0);
+    // prevItems.forEach(function (item) { $$("inventoryItemImages").removeView(item) })
+  })
   $$("inventoryItemDetails").bind($$("inventoryList"))
   $$("inventoryItemAddButton").attachEvent("onItemClick", function () {
     var formItems = []
@@ -46,17 +72,31 @@ setTimeout(function () {
       formItems.push(item)
     })
     var form = { id: "inventoryItemAddDetails", view: "form", readonly: true, rows: inventoryItemDetails }
-    inventoryItemAdd.body.rows = [form]
+    inventoryItemAdd.body.rows[0] = form
     webix.ui(
       inventoryItemAdd
     ).show()
-  
-    // $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
-    //   console.log(response)
-    // });
-    // inventoryItemAdd.show()
+
+    $$("inventoryItemAddImageList").clearAll()
+    $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
+      var filename = response.replace(response.split("-")[0] + "-", "")
+      var id = $$("inventoryItemAddImageList").find(function () { return true }).filter(function (item) { return item.name == filename })[0].id
+      var item = $$("inventoryItemAddImageList").getItem(id)
+      item.filename = response
+      $$("inventoryItemAddImageList").updateItem(id, item)
+    });
+
+    $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
+      var item = $$("inventoryItemAddDetails").getValues()
+      item.files = []
+      $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
+      REST.TinyDB.insertItem("inventory", item, function (res) {
+        item.id = res
+        $$("inventoryList").add(item)
+      })
+      $$("inventoryItemAdd").close()
+    })
   })
-  
 
   // Manuel events
   REST.registerURL(function (res) {
@@ -74,6 +114,13 @@ setTimeout(function () {
           $$("databaseTree").parse(data)
           $$("databaseTree").openAll()
         })
+    })
+    REST.TinyDB.listItems("inventory", function (res) {
+      if (!res.error) {
+        $$("inventoryList").unselectAll()
+        $$("inventoryList").clearAll()
+        $$("inventoryList").parse(res)
+      }
     })
   })
   $$("multiview").setValue("inventory")

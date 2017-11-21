@@ -48,22 +48,20 @@ var inventoryItemDetails = [
   { name: "model", view: "text", label: "Demirbaş marka ", labelWidth: 150, readonly: true }
 ]
 var inventoryRows = [
-  { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: inventoryData },
+  { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data:[]},
   { id: "inventoryItemDetails", view: "form", readonly: true, rows: inventoryItemDetails },
-  { view: "carousel", id: "inventoryItemImages", height: 180, navigation: { type: "side" } },
   {
-    cols: [
-      {},
-      { id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },
-      {}
+    view: "carousel", id: "inventoryItemImages", height: 180, navigation: { type: "side" }, cols: [
+      { template: inventoryItemImage, data: { src: "img/database_100x100_white.png", title: "Image 1" } },
     ]
-  }
+  },
+  { id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },
 ]
-function img(obj) {
+function inventoryItemImage(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
   return '<div style="width:100%; height:100%; text-align: center; padding: 0; margin: 0;">' +
     '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
-    '<img style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
+    '<img height=90 style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
     '</div>'
 }
 
@@ -77,16 +75,10 @@ var inventoryItemAdd = {
   },
   body: {
     rows: [
-      {template:"Deneme"}
-      // {
-      //   id: "inventoryItemImageUpload", view: "uploader", value: 'Resim ekle',
-      //   name: "files",
-      //   link: "mylist", upload: REST.url + "/upload/Demirbaş"
-      // },
-      // {
-      //   view: "list", id: "mylist", type: "uploader",
-      //   autoheight: true, borderless: true
-      // },
+      {},
+      { id: "inventoryItemImageUpload", view: "uploader", accept:"image/png, image/gif, image/jpg", value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
+      { view: "list", id: "inventoryItemAddImageList", type: "uploader",  autoheight: true, borderless: true },
+      { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]
   },
   position: function (state) {

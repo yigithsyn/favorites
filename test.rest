@@ -4,8 +4,7 @@
 GET http://127.0.0.1:5000/tinydb
 
 ##################
-
-GET http://127.0.0.1:5000/tinydb/ngrok
+GET http://127.0.0.1:5000/tinydb/test
 
 ##################
 POST http://127.0.0.1:5000/tinydb/test
@@ -50,3 +49,8 @@ content-type: application/json
 
 ####################################
 GET http://127.0.0.1:5000/ngrok
+
+####################################
+# Download
+####################################
+GET http://127.0.0.1:5000/download/Demirbaş/15112486034535072-Belgeler.xlsx
