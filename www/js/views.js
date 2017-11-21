@@ -76,7 +76,7 @@ var inventoryItemAdd = {
   body: {
     rows: [
       {},
-      { id: "inventoryItemImageUpload", view: "uploader", accept:"image/png, image/gif, image/jpg", value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
+      { id: "inventoryItemImageUpload", view: "uploader", accept:"image/*", autosend: false, value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
       { view: "list", id: "inventoryItemAddImageList", type: "uploader",  autoheight: true, borderless: true },
       { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]

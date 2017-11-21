@@ -55,7 +55,7 @@ class TinyDB_Item(Resource):
     db = tinydb(tinydbDatabase)
     table = db.table(table)
     try:
-      item = table.get(doc_id=int(id))
+      item = table.get(doc_id=int(doc_id))
       item["id"] = doc_id
       return item
     except Exception:
@@ -73,7 +73,7 @@ class TinyDB_Item(Resource):
 
 api.add_resource(TinyDB, '/tinydb')
 api.add_resource(TinyDB_Table, '/tinydb/<table>')
-api.add_resource(TinyDB_Item, '/tinydb/<table>/<id>')
+api.add_resource(TinyDB_Item, '/tinydb/<table>/<doc_id>')
 
 # =============================================================================
 # File Upload
