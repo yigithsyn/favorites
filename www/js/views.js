@@ -55,7 +55,7 @@ var inventoryRows = [
       { template: inventoryItemImage, data: { src: "img/database_100x100_white.png", title: "Image 1" } },
     ]
   },
-  { id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },
+  {cols:[{},{ id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },{}]}
 ]
 function inventoryItemImage(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
