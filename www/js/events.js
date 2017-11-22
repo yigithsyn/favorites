@@ -36,15 +36,12 @@ setTimeout(function () {
     // console.log(obj)
     $$('databaseItemDetails').show();
   })
-
+  
   // Inventory
+  $$("inventoryItemDetails").bind($$("inventoryList"))
   $$("inventoryList").attachEvent("onSelectChange", function (id) {
-    var index = $$("inventoryItemImages").getActiveIndex()
-    var currIndex = index
-    var lastIndex = 999
     var item = $$("inventoryList").getItem(id)
     ids = []
-    // $$("inventoryItemImages").getChildViews().forEach(function (item) { prevItems.push(item.nc[0].id) })
     item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: REST.url + "/download/Demirbaş/" + item } })) })
     $$("inventoryItemImages").setActiveIndex(0);
     if (ids.indexOf($$("inventoryItemImages").getActiveId()) == -1) {
@@ -62,43 +59,40 @@ setTimeout(function () {
       $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
     }
     $$("inventoryItemImages").setActiveIndex(0);
-    // prevItems.forEach(function (item) { $$("inventoryItemImages").removeView(item) })
   })
-  $$("inventoryItemDetails").bind($$("inventoryList"))
+
   $$("inventoryItemAddButton").attachEvent("onItemClick", function () {
     var formItems = []
-    inventoryItemDetails.forEach(function (item) {
-      delete item.readonly
-      formItems.push(item)
-    })
+    inventoryItemDetails.forEach(function (item) { delete item.readonly; formItems.push(item) })
     var form = { id: "inventoryItemAddDetails", view: "form", readonly: true, rows: inventoryItemDetails }
     inventoryItemAdd.body.rows[0] = form
-    webix.ui(
-      inventoryItemAdd
-    ).show()
+    webix.ui(inventoryItemAdd).show()
+    document.getElementById("inventoryAddItemImage").removeAttribute("hidden")
+    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { url: REST.url + "/upload/Demirbaş" });
 
-    $$("inventoryItemAddImageList").clearAll()
-    $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
-      var filename = response.replace(response.split("-")[0] + "-", "")
-      var id = $$("inventoryItemAddImageList").find(function () { return true }).filter(function (item) { return item.name == filename })[0].id
-      var item = $$("inventoryItemAddImageList").getItem(id)
-      item.filename = response
-      $$("inventoryItemAddImageList").updateItem(id, item)
-    });
 
-    $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
-      $$("inventoryItemImageUpload").send()
-      setTimeout(function () {
-        var item = $$("inventoryItemAddDetails").getValues()
-        item.files = []
-        $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
-        REST.TinyDB.insertItem("inventory", item, function (res) {
-          item.id = res
-          $$("inventoryList").add(item)
-        })
-        $$("inventoryItemAdd").close()
-      }, 2000)
-    })
+    // $$("inventoryItemAddImageList").clearAll()
+    // $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
+    //   var filename = response.replace(response.split("-")[0] + "-", "")
+    //   var id = $$("inventoryItemAddImageList").find(function () { return true }).filter(function (item) { return item.name == filename })[0].id
+    //   var item = $$("inventoryItemAddImageList").getItem(id)
+    //   item.filename = response
+    //   $$("inventoryItemAddImageList").updateItem(id, item)
+    // });
+
+    // $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
+    //   $$("inventoryItemImageUpload").send()
+    //   setTimeout(function () {
+    //     var item = $$("inventoryItemAddDetails").getValues()
+    //     item.files = []
+    //     $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
+    //     REST.TinyDB.insertItem("inventory", item, function (res) {
+    //       item.id = res
+    //       $$("inventoryList").add(item)
+    //     })
+    //     $$("inventoryItemAdd").close()
+    //   }, 2000)
+    // })
   })
 
   // Manuel events

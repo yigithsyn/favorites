@@ -48,14 +48,14 @@ var inventoryItemDetails = [
   { name: "model", view: "text", label: "Demirbaş marka ", labelWidth: 150, readonly: true }
 ]
 var inventoryRows = [
-  { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data:[]},
+  { id: "inventoryList", view: "list", select: true, template: "#no# &nbsp&nbsp #name#", data: [] },
   { id: "inventoryItemDetails", view: "form", readonly: true, rows: inventoryItemDetails },
   {
     view: "carousel", id: "inventoryItemImages", height: 180, navigation: { type: "side" }, cols: [
       { template: inventoryItemImage, data: { src: "img/database_100x100_white.png", title: "Image 1" } },
     ]
   },
-  {cols:[{},{ id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" },{}]}
+  { cols: [{}, { id: "inventoryItemAddButton", view: "button", type: "icon", icon: "plus", label: 'Ekle', autowidth: true, align: "center" }, {}] }
 ]
 function inventoryItemImage(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
@@ -76,8 +76,9 @@ var inventoryItemAdd = {
   body: {
     rows: [
       {},
-      { id: "inventoryItemImageUpload", view: "uploader", accept:"image/*", autosend: false, value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
-      { view: "list", id: "inventoryItemAddImageList", type: "uploader",  autoheight: true, borderless: true },
+      { view: "template", content: "inventoryAddItemImage", autoheight: true },
+      // { id: "inventoryItemImageUpload", view: "uploader", accept:"image/*", autosend: false, value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
+      { view: "list", id: "inventoryItemAddImageList", type: "uploader", autoheight: true, borderless: true },
       { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]
   },
