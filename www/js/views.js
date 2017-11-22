@@ -77,7 +77,8 @@ var inventoryItemAdd = {
     rows: [
       {},
       { view: "template", content: "inventoryAddItemImage", height:25 },
-      { view: "list", id: "inventoryItemAddImageList", type: "uploader", height: 100, borderless: true, select:true, template:"#name#<span style='float:right;'>#size#</span>" },
+      { id: "inventoryItemImageUpload", view: "uploader", accept:"image/*", autosend: true, value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
+      { view: "list", id: "inventoryItemAddImageList", type: "uploader", height: 100, borderless: true, select:true},
       { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]
   },
