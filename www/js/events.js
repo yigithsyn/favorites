@@ -36,7 +36,7 @@ setTimeout(function () {
     // console.log(obj)
     $$('databaseItemDetails').show();
   })
-  
+
   // Inventory
   $$("inventoryItemDetails").bind($$("inventoryList"))
   $$("inventoryList").attachEvent("onSelectChange", function (id) {
@@ -67,37 +67,35 @@ setTimeout(function () {
     var form = { id: "inventoryItemAddDetails", view: "form", readonly: true, rows: inventoryItemDetails }
     inventoryItemAdd.body.rows[0] = form
     webix.ui(inventoryItemAdd).show()
+    $$("inventoryItemAddImageList").clearAll()
+
+
     document.getElementById("inventoryAddItemImage").removeAttribute("hidden")
-    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { url: REST.url + "/upload/Demirbaş" });
+    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { withCredentials:false, url: REST.url + "/upload/Demirbaş", createImageThumbnails: false });
+    myDropzone.on("success", function (file, res) {
+      $$("inventoryItemAddImageList").add({ name: file.name, size: fileSizeToString(file.size), filename: res })
+    });
+    myDropzone.on("error", function (file, errorMessage, xhtmlerror) {
+      console.log(errorMessage)
+      console.log(xhtmlerror)
+    });
 
-
-    // $$("inventoryItemAddImageList").clearAll()
-    // $$("inventoryItemImageUpload").attachEvent("onFileUpload", function (item, response) {
-    //   var filename = response.replace(response.split("-")[0] + "-", "")
-    //   var id = $$("inventoryItemAddImageList").find(function () { return true }).filter(function (item) { return item.name == filename })[0].id
-    //   var item = $$("inventoryItemAddImageList").getItem(id)
-    //   item.filename = response
-    //   $$("inventoryItemAddImageList").updateItem(id, item)
-    // });
-
-    // $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
-    //   $$("inventoryItemImageUpload").send()
-    //   setTimeout(function () {
-    //     var item = $$("inventoryItemAddDetails").getValues()
-    //     item.files = []
-    //     $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
-    //     REST.TinyDB.insertItem("inventory", item, function (res) {
-    //       item.id = res
-    //       $$("inventoryList").add(item)
-    //     })
-    //     $$("inventoryItemAdd").close()
-    //   }, 2000)
-    // })
+    $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
+      var item = $$("inventoryItemAddDetails").getValues()
+      item.files = []
+      $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
+      REST.TinyDB.insertItem("inventory", item, function (res) {
+        item.id = res
+        $$("inventoryList").add(item)
+      })
+      $$("inventoryItemAdd").close()
+    })
   })
 
   // Manuel events
   REST.registerURL(function (res) {
     $$("jupyternb").load(REST.jupyternb_url)
+    // if(window.location.href !== REST.url+"/index.html") window.location.replace(REST.url+"/index.html")
     REST.TinyDB.listTables(function (tables) {
       var data = []
       async.eachSeries(tables,

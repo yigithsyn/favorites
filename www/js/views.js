@@ -76,9 +76,8 @@ var inventoryItemAdd = {
   body: {
     rows: [
       {},
-      { view: "template", content: "inventoryAddItemImage", autoheight: true },
-      // { id: "inventoryItemImageUpload", view: "uploader", accept:"image/*", autosend: false, value: 'Resim ekle', link: "inventoryItemAddImageList", upload: REST.url + "/upload/Demirbaş" },
-      { view: "list", id: "inventoryItemAddImageList", type: "uploader", autoheight: true, borderless: true },
+      { view: "template", content: "inventoryAddItemImage", height:25 },
+      { view: "list", id: "inventoryItemAddImageList", type: "uploader", height: 100, borderless: true, select:true, template:"#name#<span style='float:right;'>#size#</span>" },
       { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]
   },
@@ -89,7 +88,6 @@ var inventoryItemAdd = {
     state.height += 0;
   }
 }
-// var inventoryItemAdd = webix.ui().show()
 
 // Multiview
 var views = [

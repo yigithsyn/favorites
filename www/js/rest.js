@@ -4,8 +4,8 @@ var REST = {
   registerURL: function (callback = function () { }) {
     REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
       if (!res.error) {
-        // REST.url = res[0].url
-        // REST.jupyternb_url = res[1].url + "?token=" + res[1].token
+        REST.url = res[0].url
+        REST.jupyternb_url = res[1].url + "?token=" + res[1].token
         callback(REST.url)
       }
       else {
