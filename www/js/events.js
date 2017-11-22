@@ -81,14 +81,15 @@ setTimeout(function () {
     });
 
     $$("inventoryItemAddFinishButton").attachEvent("onItemClick", function () {
-      var item = $$("inventoryItemAddDetails").getValues()
-      item.files = []
-      $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
-      REST.TinyDB.insertItem("inventory", item, function (res) {
-        item.id = res
-        $$("inventoryList").add(item)
-      })
-      $$("inventoryItemAdd").close()
+      $$("inventoryItemImageUpload").send()
+      // var item = $$("inventoryItemAddDetails").getValues()
+      // item.files = []
+      // $$("inventoryItemAddImageList").find(function () { return true }).forEach(function (file) { item.files.push(file.filename) })
+      // REST.TinyDB.insertItem("inventory", item, function (res) {
+      //   item.id = res
+      //   $$("inventoryList").add(item)
+      // })
+      // $$("inventoryItemAdd").close()
     })
   })
 
