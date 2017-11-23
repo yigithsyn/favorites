@@ -37,10 +37,6 @@ var databaseRows = [
 ]
 
 // Inventory
-var inventoryData = [
-  { no: 1, serial: "wer1", name: "demirbaş1", model: "model1" },
-  { no: 2, serial: "wer2", name: "demirbaş2", model: "model2" }
-]
 var inventoryItemDetails = [
   { name: "no", view: "text", label: "Demirbaş numarası ", labelWidth: 150 },
   { name: "serial", view: "text", label: "Seri numarası ", labelWidth: 150, readonly: true },

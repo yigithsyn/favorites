@@ -42,7 +42,7 @@ setTimeout(function () {
   $$("inventoryList").attachEvent("onSelectChange", function (id) {
     var item = $$("inventoryList").getItem(id)
     ids = []
-    item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: REST.url + "/download/Demirbaş/" + item } })) })
+    item.files.forEach(function (item) { ids.push($$("inventoryItemImages").addView({ template: inventoryItemImage, data: { src: REST.url + "/download/Inventory/" + item } })) })
     $$("inventoryItemImages").setActiveIndex(0);
     if (ids.indexOf($$("inventoryItemImages").getActiveId()) == -1) {
       $$("inventoryItemImages").removeView($$("inventoryItemImages").getActiveId())
@@ -71,7 +71,7 @@ setTimeout(function () {
 
 
     document.getElementById("inventoryAddItemImage").removeAttribute("hidden")
-    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { withCredentials:false, url: REST.url + "/upload/Demirbaş", createImageThumbnails: false });
+    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { withCredentials:false, url: REST.url + "/upload/Inventory", createImageThumbnails: false });
     myDropzone.on("success", function (file, res) {
       $$("inventoryItemAddImageList").add({ name: file.name, size: fileSizeToString(file.size), filename: res })
     });

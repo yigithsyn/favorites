@@ -5,7 +5,7 @@ import time
 from subprocess import Popen
 import atexit
 import argparse
-import signal
+
 # Installed modules
 from flask import Flask, request, redirect, send_from_directory, send_file
 from flask_restful import Resource, Api, reqparse
@@ -16,6 +16,22 @@ import requests
 from notebook import notebookapp
 import wmi
 import psutil
+
+# create directory if does not exists
+def createDirectory(directory):
+  try:
+    os.mkdir(directory)
+  except Exception:
+    print({"error": {"type": "api", "source": "main",
+                     "msg": str(traceback.format_exc())}})
+
+
+createDirectory("data")
+createDirectory("data/Inventory")
+createDirectory("data/JupyterNB")
+
+# database
+tinydbDatabase = tinydb(str(os.getcwd()) + "\\data\\db.json")
 
 # parse command-line arguments
 parser = argparse.ArgumentParser()
@@ -45,18 +61,13 @@ def static_proxy(path):
 # =============================================================================
 # TinyDB
 # =============================================================================
-
-tinydbDatabase = str(os.getcwd()) + "\\data\\db.json"
-
 class TinyDB(Resource):
   def get(self):
-    db = tinydb(tinydbDatabase)
-    return list(db.tables())
+    return list(tinydbDatabase.tables())
 
 class TinyDB_Table(Resource):
   def get(self, table):
-    db = tinydb(tinydbDatabase)
-    table = db.table(table)
+    table = tinydbDatabase.table(table)
     items = []
     for item in table.all():
       item["id"] = item.doc_id
@@ -64,14 +75,12 @@ class TinyDB_Table(Resource):
     return items
 
   def post(self, table):
-    db = tinydb(tinydbDatabase)
-    table = db.table(table)
+    table = tinydbDatabase.table(table)
     return table.insert(request.json)
 
 class TinyDB_Item(Resource):
   def get(self, table, doc_id):
-    db = tinydb(tinydbDatabase)
-    table = db.table(table)
+    table = tinydbDatabase.table(table)
     try:
       item = table.get(doc_id=int(doc_id))
       item["id"] = doc_id
@@ -80,8 +89,7 @@ class TinyDB_Item(Resource):
       return {"error": {"type": "api", "msg": "TinyDB_Item: GET\n" + str(traceback.format_exc())}}
 
   def delete(self, table, doc_id):
-    db = tinydb(tinydbDatabase)
-    table = db.table(table)
+    table = tinydbDatabase.table(table)
     try:
       table.remove(doc_ids=[int(doc_id)])
       return {}
@@ -102,11 +110,6 @@ api.add_resource(TinyDB_Item, '/tinydb/<table>/<doc_id>')
 
 class Upload(Resource):
   def post(self, directory):
-    try:
-      os.mkdir("data/" + directory)
-    except OSError:
-      pass
-    print(request.files)
     # check if the post request has the file part
     if 'file' in request.files:
       file = request.files['file']
@@ -172,8 +175,7 @@ if args.node:
 if args.tunnel:
   time.sleep(3)
   if node:
-    db = tinydb(tinydbDatabase)
-    table = db.table("ngrok")
+    table = tinydbDatabase.table("ngrok")
     ngrokAuth = table.get(doc_id=1)
     r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
     if r.status_code != 200:
@@ -225,15 +227,15 @@ if args.tunnel:
 
 # At exit cleaning
 def killProcess(proc_pid):
-    process = psutil.Process(proc_pid)
-    for proc in process.children(recursive=True):
-        proc.kill()
-    process.kill()
+  process = psutil.Process(proc_pid)
+  for proc in process.children(recursive=True):
+    proc.kill()
+  process.kill()
 
 def cleanup():
   time.sleep(3)
   processes = ["node.exe", "node.exe",
-                 "jupyter-notebook.exe", "jupyter-notebook.exe"]
+               "jupyter-notebook.exe", "jupyter-notebook.exe"]
   if node:
     killProcess(node.pid)
     if args.debug:
@@ -268,4 +270,4 @@ def cleanup():
 
 atexit.register(cleanup)
 
-app.run(debug=args.debug, extra_files=["app.js"])
+app.run(host="0.0.0.0", debug=args.debug, extra_files=["app.js"])
