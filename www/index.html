@@ -80,7 +80,7 @@
   <script src="js/backbone/backbone-min.js" type="text/javascript"></script>
   <script src="js/pretty-json/dist/pretty-json.min.js" type="text/javascript"></script>
   <link rel="stylesheet" type="text/css" href="js/pretty-json/dist/pretty-json.css">
-  
+
   <!-- Dropzone.js -->
   <script type="text/javascript" src="js/dropzone.js"></script>
 
@@ -97,7 +97,14 @@
       view: "toolbar",
       elements: [
         { id: "sidemenuicon", view: "icon", icon: "home" },
-        { id: "headbarLabel", view: "label", label: "KAMUS" },
+        { id: "headerLabel1", view: "label", autoWidth: true },
+        { id: "headerLabel12", view: "label", label: ">", width: 20, hidden:true },
+        { id: "headerLabel2", view: "label", autoWidth: true },
+        { id: "headerLabel23", view: "label", label: ">", width: 20, hidden:true },
+        { id: "headerLabel3", view: "label", autoWidth: true },
+        // { id: "headerLabel23", view: "label", label: ">", autowidth: true, hidden: true },
+        // { id: "headerLabel3", view: "label", autowidth: true },
+        {},
       ]
     }
 
@@ -123,6 +130,14 @@
       $$("body").define("width", $$("body").$height / 2)
       $$("body").resize()
     }
+
+    // manuel events
+    setTimeout(function () {
+      $$("multiview").setValue("kodyap")
+      // $$("multiview").setValue("inventory")
+      // $$("multiview").setValue("jupyternb")
+      // $$("sidelist").select("home")
+    }, 3000)
 
   </script>
 

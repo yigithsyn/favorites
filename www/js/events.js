@@ -3,13 +3,21 @@ setTimeout(function () {
   // Toolbar
   $$("sidemenuicon").attachEvent("onItemClick", function () {
     $$("multiview").setValue("home")
-    $$("headbarLabel").setValue("KAMUS > Ana Sayfa")
   })
 
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
     $$("multiview").setValue(this.getItem(id).id)
-    $$("headbarLabel").setValue("KAMUS > " + this.getItem(id).value)
+  });
+  
+  $$("multiview").attachEvent("onChange", function () {
+    var id = $$("multiview").getValue()
+    var name = views.filter(function(item){ return item.id == id})[0].value
+    $$("headerLabel1").setValue(name)
+    $$("headerLabel2").hide()
+    $$("headerLabel3").hide()
+    $$("headerLabel12").hide()
+    $$("headerLabel23").hide()
   });
 
   // Database
@@ -92,6 +100,22 @@ setTimeout(function () {
     })
   })
 
+  //===========================================================================
+  // kodyap
+  //===========================================================================
+  $$("kodyapHome").attachEvent("onItemClick", function (id) {
+    $$("kodyap").setValue(this.getItem(id).id)
+  });
+  
+  $$("kodyap").attachEvent("onViewChange", function (prev, next) {
+    var name = kodyapViews.filter(function(item){ return item.id == next})[0].value
+    $$("headerLabel2").setValue(name)
+    $$("headerLabel2").show()
+    $$("headerLabel3").hide()
+    $$("headerLabel12").show()
+    $$("headerLabel23").hide()
+  });
+
   // Manuel events
   REST.registerURL(function (res) {
     REST.TinyDB.listItems("jupyternb", function(res){
@@ -123,9 +147,5 @@ setTimeout(function () {
       }
     })
   })
-  $$("multiview").setValue("inventory")
-  // $$("multiview").setValue("jupyternb")
-  // $$("sidelist").select("home")
-
 
 }, 1000)

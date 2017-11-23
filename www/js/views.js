@@ -3,6 +3,7 @@ var winmenuData = [
   { id: "database", value: "Veritabanı", img: "img/database_100x100_white.png", color: "#008ba0", x: 1, y: 1, width: 1 },
   { id: "inventory", value: "Demirbaş", img: "img/barcode_100x100_white.png", color: "#535353", x: 2, y: 1, width: 1 },
   { id: "jupyternb", value: "JupyterNB", img: "img/jupyternb_white_100x100.png", color: "#603cbb", x: 1, y: 2, width: 1 },
+  { id: "kodyap", value: "KODYAP", img: "img/kodyap_100x100.png", color: "#00a300", x: 2, y: 2, width: 1 },
   // { value: "Finance", img: "icons/03.png", color: "#008ba0", x: 1, y: 1, width: 2 },
   // { value: "Settings", img: "icons/06.png", color: "#603cbb", x: 1, y: 2, width: 2 },
   // { value: "People", img: "icons/34.png", color: "#d9532c", x: 1, y: 3, width: 2 },
@@ -72,8 +73,8 @@ var inventoryItemAdd = {
   body: {
     rows: [
       {},
-      { view: "template", content: "inventoryAddItemImage", height:25 },
-      { view: "list", id: "inventoryItemAddImageList", type: "uploader", height: 100, borderless: true, select:true, template:"#name#<span style='float:right;'>#size#</span>" },
+      { view: "template", content: "inventoryAddItemImage", height: 25 },
+      { view: "list", id: "inventoryItemAddImageList", type: "uploader", height: 100, borderless: true, select: true, template: "#name#<span style='float:right;'>#size#</span>" },
       { id: "inventoryItemAddFinishButton", view: "button", type: "icon", icon: "check", label: 'Tamamla', autowidth: true, align: "center" },
     ]
   },
@@ -85,12 +86,29 @@ var inventoryItemAdd = {
   }
 }
 
+//=============================================================================
+// kodyap
+//=============================================================================
+var kodyapMenuData = [
+  { id: "kodyapVertical", value: "Dikey Sistem", img: "img/kodyap_vertical_150x150.png", color: "#603cbb", x: 1, y: 1 },
+  { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/kodyap_horizontal_150x150.png", color: "#603cbb", x: 1, y: 2 },
+  { id: "kodyapArchieve", value: "Ölçüm Arşivi", img: "img/kodyap_archieve_150x150.png", color: "#603cbb", x: 1, y: 3 },
+];
+
+var kodyapViews = [
+  {id:"kodyapHome", view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 1, yCount: 3},
+  {id: "kodyapVertical", value:"Dikey", template:"Dikey"},
+  {id: "kodyapHorizontal", value: "Yatay", template:"Yatay"},
+  {id: "kodyapArchieve", value: "Ölçümler", template:"Ölçümler"}
+]
+
 // Multiview
 var views = [
   { id: "home", value: "Ana Sayfa", view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
   { id: "database", view: "layout", value: "Veritabanı", icon: "database", rows: databaseRows },
   { id: "inventory", value: "Demirbaş", icon: "barcode", rows: inventoryRows },
   { id: "storage", value: "Depolama", icon: "cloud", template: "Cloud" },
-  { id: "jupyternb", value: "JupyterNB", view: "iframe", src: "" }
+  { id: "jupyternb", value: "JupyterNB", view: "iframe", src: "" },
+  { id: "kodyap", value: "KODYAP", cells: kodyapViews, keepViews: true},
 ]
 
