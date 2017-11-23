@@ -170,6 +170,7 @@ if args.node:
 
 # Tunneling
 if args.tunnel:
+  time.sleep(3)
   if node:
     db = tinydb(tinydbDatabase)
     table = db.table("ngrok")
@@ -218,7 +219,7 @@ if args.tunnel:
               print(
                   {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
             else:
-              print("Python app tunnelled through: " +
+              print("JupyterNB app tunnelled through: " +
                     item["url"] + "?token=" + item["token"])
 
 
@@ -262,7 +263,7 @@ def cleanup():
         for process in processManager.Win32_Process():
           processes.append(process.Name)
         time.sleep(1)
-    print('Jupyter Notebook app stopped.')
+    print('JupyterNB app stopped.')
 
 
 atexit.register(cleanup)

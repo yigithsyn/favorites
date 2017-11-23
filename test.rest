@@ -4,7 +4,7 @@
 GET http://127.0.0.1:5000/tinydb
 
 ##################
-GET http://127.0.0.1:5000/tinydb/inventory
+GET http://127.0.0.1:5000/tinydb/ngrok
 
 ##################
 POST http://127.0.0.1:5000/tinydb/test
