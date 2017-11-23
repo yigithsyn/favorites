@@ -94,8 +94,13 @@ setTimeout(function () {
 
   // Manuel events
   REST.registerURL(function (res) {
-    $$("jupyternb").load(REST.jupyternb_url)
-    // if(window.location.href !== REST.url+"/index.html") window.location.replace(REST.url+"/index.html")
+    REST.TinyDB.listItems("jupyternb", function(res){
+      if(!res.error){
+        REST.jupyternb_url += "?token=" + res[0].token
+        $$("jupyternb").load(REST.jupyternb_url)
+      }
+      else console.log(res)
+    })
     REST.TinyDB.listTables(function (tables) {
       var data = []
       async.eachSeries(tables,

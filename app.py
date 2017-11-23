@@ -88,6 +88,14 @@ class TinyDB_Item(Resource):
     except Exception:
       return {"error": {"type": "api", "msg": "TinyDB_Item: GET\n" + str(traceback.format_exc())}}
 
+  def post(self, table, doc_id):
+    table = tinydbDatabase.table(table)
+    try:
+      table.update(request.json(), doc_ids=[int(doc_id)])
+      return {}
+    except Exception:
+      return {"error": {"type": "api", "msg": "TinyDB_Item: PUT\n" + str(traceback.format_exc())}}
+
   def delete(self, table, doc_id):
     table = tinydbDatabase.table(table)
     try:
@@ -157,6 +165,11 @@ if args.jupyternb:
                        "jupyter_notebook_config.py"], shell=True)
     time.sleep(10)
     jupyternb_server = list(notebookapp.list_running_servers())[0]
+    table = tinydbDatabase.table("jupyternb")
+    if table.get(doc_id=1):
+      table.update(jupyternb_server, doc_ids=[1])
+    else:
+      table.insert(jupyternb_server)
     print("JupyterNB app started.")
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
@@ -212,17 +225,13 @@ if args.tunnel:
             print(
                 {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
           else:
-            server = list(notebookapp.list_running_servers())[0]
-            item = r.json()
-            item["token"] = server["token"]
             mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                                 mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
+                                 mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
             if mlabr.status_code != 200:
               print(
                   {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
             else:
-              print("JupyterNB app tunnelled through: " +
-                    item["url"] + "?token=" + item["token"])
+              print("JupyterNB app tunnelled through: " + r.json()["url"])
 
 
 # At exit cleaning

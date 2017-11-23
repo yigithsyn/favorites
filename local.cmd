@@ -1,1 +1,1 @@
-nodemon --exec "python app.py --node --jupyternb" --watch app.py --watch app.js
+clear && nodemon --exec "python app.py --node --jupyternb" --watch app.py --watch app.js

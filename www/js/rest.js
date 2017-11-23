@@ -5,8 +5,15 @@ var REST = {
     REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
       if (!res.error) {
         REST.url = res[0].url
-        REST.jupyternb_url = res[1].url + "?token=" + res[1].token
-        callback(REST.url)
+        REST.jupyternb_url = res[1].url
+        REST.TinyDB.listTables(function(res){
+          if(res.error){
+            REST.url = "http://127.0.0.1:5000",
+            REST.jupyternb_url = "http://127.0.0.1:8888",
+            callback(REST.url)
+          }
+          else callback(REST.url)
+        })
       }
       else {
         callback(res)
