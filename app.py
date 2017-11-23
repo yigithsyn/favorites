@@ -4,6 +4,8 @@ import traceback
 import time
 from subprocess import Popen
 import atexit
+import argparse
+import signal
 # Installed modules
 from flask import Flask, request, redirect, send_from_directory, send_file
 from flask_restful import Resource, Api, reqparse
@@ -12,11 +14,27 @@ from werkzeug.utils import secure_filename
 from tinydb import TinyDB as tinydb
 import requests
 from notebook import notebookapp
+import wmi
+import psutil
 
+# parse command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument("--debug", help="enable debug mode", action="store_true")
+parser.add_argument(
+    "--tunnel", help="enable tunnelling to web", action="store_true")
+parser.add_argument("--node", help="run Node.js app", action="store_true")
+parser.add_argument(
+    "--jupyternb", help="run Jupyter Notebook app", action="store_true")
+args = parser.parse_args()
+
+# run flask app
 app = Flask(__name__, static_folder='www')
 CORS(app)
 api = Api(app)
 parser = reqparse.RequestParser()
+
+# process manager
+processManager = wmi.WMI()
 
 # serve index.html
 @app.route('/<path:path>')
@@ -124,84 +142,129 @@ class Download(Resource):
 
 api.add_resource(Download, '/download/<directory>/<file>')
 
+# =============================================================================
+# Startup Actions
+# =============================================================================
 # Jupyter Notebook app
-jupyternb = Popen(['jupyter', 'notebook', "--config",
-                   "jupyter_notebook_config.py"], shell=True)
+jupyternb = None
+jupyternb_server = {"token": None}
+if args.jupyternb:
+  try:
+    jupyternb = Popen(['jupyter', 'notebook', "--config",
+                       "jupyter_notebook_config.py"], shell=True)
+    time.sleep(10)
+    jupyternb_server = list(notebookapp.list_running_servers())[0]
+    print("JupyterNB app started.")
+  except Exception:
+    print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
 # Node.js app
-node = Popen(['node', 'app.js'], shell=True)
+node = None
+if args.node:
+  try:
+    node = Popen(['node', 'app.js'], shell=True)
+    time.sleep(3)
+    print("Node.js app started.")
+  except Exception:
+    print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
-# Ngrok tunnelling service register
-time.sleep(3)
-def registerNgrokTunnel():
-  db = tinydb(tinydbDatabase)
-  table = db.table("ngrok")
-  # Python app
-  ngrokAuth = table.get(doc_id=1)
-  r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
-  if r.status_code != 200:
-    print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
-  elif "error" in r.json().keys():
-    print(r.json())
-  else:
-    if "url" in r.json().keys():
-      mlabr = requests.get(
-          "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-      if mlabr.status_code != 200:
-        print(
-            {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-      else:
-        mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                             mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+# Tunneling
+if args.tunnel:
+  if node:
+    db = tinydb(tinydbDatabase)
+    table = db.table("ngrok")
+    ngrokAuth = table.get(doc_id=1)
+    r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
+    if r.status_code != 200:
+      print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
+    elif "error" in r.json().keys():
+      print(r.json())
+    else:
+      if "url" in r.json().keys():
+        mlabr = requests.get(
+            "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
         if mlabr.status_code != 200:
           print(
               {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
         else:
-          print(r.json())
-  # Jupyter Notebook app
-  ngrokAuth = table.get(doc_id=2)
-  r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
-  if r.status_code != 200:
-    print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
-  elif "error" in r.json().keys():
-    print(r.json())
-  else:
-    if "url" in r.json().keys():
-      mlabr = requests.get(
-          "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-      if mlabr.status_code != 200:
-        print(
-            {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+          mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
+                               mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
+          if mlabr.status_code != 200:
+            print(
+                {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+          else:
+            print("Python app tunnelled through: " + r.json()["url"])
+    if jupyternb:
+      ngrokAuth = table.get(doc_id=2)
+      r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
+      if r.status_code != 200:
+        print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
+      elif "error" in r.json().keys():
+        print(r.json())
       else:
-        server = list(notebookapp.list_running_servers())[0]
-        item = r.json()
-        item["token"] = server["token"]
-        print(item)
-        mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                             mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
-        if mlabr.status_code != 200:
-          print(
-              {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-        else:
-          print(item)
+        if "url" in r.json().keys():
+          mlabr = requests.get(
+              "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
+          if mlabr.status_code != 200:
+            print(
+                {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+          else:
+            server = list(notebookapp.list_running_servers())[0]
+            item = r.json()
+            item["token"] = server["token"]
+            mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
+                                 mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=item)
+            if mlabr.status_code != 200:
+              print(
+                  {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
+            else:
+              print("Python app tunnelled through: " +
+                    item["url"] + "?token=" + item["token"])
 
-
-try:
-  registerNgrokTunnel()
-except Exception:
-  print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
 # At exit cleaning
+def killProcess(proc_pid):
+    process = psutil.Process(proc_pid)
+    for proc in process.children(recursive=True):
+        proc.kill()
+    process.kill()
+
 def cleanup():
-  time.sleep(1)
-  node.kill()
-  print('Node.js app stopped.')
-  jupyternb.kill()
-  print('Jupyter Notebook app stopped.')
+  time.sleep(3)
+  processes = ["node.exe", "node.exe",
+                 "jupyter-notebook.exe", "jupyter-notebook.exe"]
+  if node:
+    killProcess(node.pid)
+    if args.debug:
+      while processes.count("node.exe") > 1:
+        processes = []
+        for process in processManager.Win32_Process():
+          processes.append(process.Name)
+        time.sleep(1)
+    else:
+      while processes.count("node.exe") > 0:
+        processes = []
+        for process in processManager.Win32_Process():
+          processes.append(process.Name)
+        time.sleep(1)
+    print('Node.js app stopped.')
+  if jupyternb:
+    killProcess(jupyternb.pid)
+    if args.debug:
+      while processes.count("jupyter.exe") > 1:
+        processes = []
+        for process in processManager.Win32_Process():
+          processes.append(process.Name)
+        time.sleep(1)
+    else:
+      while processes.count("jupyter.exe") > 0:
+        processes = []
+        for process in processManager.Win32_Process():
+          processes.append(process.Name)
+        time.sleep(1)
+    print('Jupyter Notebook app stopped.')
 
 
 atexit.register(cleanup)
 
-# Flask app
-app.run(debug=True, extra_files=["app.js"])
-# app.run(debug=False)
+app.run(debug=args.debug, extra_files=["app.js"])
