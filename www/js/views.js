@@ -1,22 +1,7 @@
-// home
-var winmenuData = [
-  { id: "database", value: "Veritabanı", img: "img/database_100x100_white.png", color: "#008ba0", x: 1, y: 1, width: 1 },
-  { id: "inventory", value: "Demirbaş", img: "img/barcode_100x100_white.png", color: "#535353", x: 2, y: 1, width: 1 },
-  { id: "jupyternb", value: "JupyterNB", img: "img/jupyternb_white_100x100.png", color: "#603cbb", x: 1, y: 2, width: 1 },
-  { id: "kodyap", value: "KODYAP", img: "img/kodyap_100x100.png", color: "#00a300", x: 2, y: 2, width: 1 },
-  // { value: "Finance", img: "icons/03.png", color: "#008ba0", x: 1, y: 1, width: 2 },
-  // { value: "Settings", img: "icons/06.png", color: "#603cbb", x: 1, y: 2, width: 2 },
-  // { value: "People", img: "icons/34.png", color: "#d9532c", x: 1, y: 3, width: 2 },
-  // { value: "Calendar", img: "icons/12.png", color: "#535353", x: 3, y: 1 },
-  // { value: "Store", img: "icons/18.png", color: "#00a300", x: 4, y: 1 },
-  // { value: "Email", img: "icons/20.png", color: "#a400ab", x: 3, y: 2 },
-  // { value: "Music", img: "icons/22.png", color: "#0a57c0", x: 4, y: 2 },
-  // { value: "Photos", img: "icons/09.png", color: "#00889e", x: 3, y: 3, width: 2 }
-];
 
 // var data2 = [
-//   { value: "Documents", img: "icons/24.png", color: "#d9532c", x: 1, y: 1, width: 2 },
-//   { value: "Games", img: "icons/30.png", color: "#008ba0", x: 1, y: 2 },
+  //   { value: "Documents", img: "icons/24.png", color: "#d9532c", x: 1, y: 1, width: 2 },
+  //   { value: "Games", img: "icons/30.png", color: "#008ba0", x: 1, y: 2 },
 //   { value: "Video", img: "icons/32.png", color: "#a400ab", x: 2, y: 2 }
 // ];
 
@@ -57,9 +42,9 @@ var inventoryRows = [
 function inventoryItemImage(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
   return '<div style="width:100%; height:100%; text-align: center; padding: 0; margin: 0;">' +
-    '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
-    '<img height=90 style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
-    '</div>'
+  '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
+  '<img height=90 style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
+  '</div>'
 }
 
 var inventoryItemAdd = {
@@ -90,25 +75,42 @@ var inventoryItemAdd = {
 // kodyap
 //=============================================================================
 var kodyapMenuData = [
-  { id: "kodyapVertical", value: "Dikey Sistem", img: "img/kodyap_vertical_150x150.png", color: "#603cbb", x: 1, y: 1 },
-  { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/kodyap_horizontal_150x150.png", color: "#603cbb", x: 1, y: 2 },
-  { id: "kodyapArchieve", value: "Ölçüm Arşivi", img: "img/kodyap_archieve_150x150.png", color: "#603cbb", x: 1, y: 3 },
+  { id: "kodyapVertical", value: "Dikey Sistem", img: "img/fa-arrows-v-100x100.png", color: "#603cbb", x: 1, y: 1 },
+  { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/fa-arrows-h-100x100.png", color: "#603cbb", x: 2, y: 1 },
+  { id: "kodyapArchieve", value: "Ölçüm Arşivi", img: "img/fa-search-100x100.png", color: "#603cbb", x: 1, y: 2 },
 ];
 
 var kodyapViews = [
-  {id:"kodyapHome", view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 1, yCount: 3},
-  {id: "kodyapVertical", value:"Dikey", template:"Dikey"},
-  {id: "kodyapHorizontal", value: "Yatay", template:"Yatay"},
-  {id: "kodyapArchieve", value: "Ölçümler", template:"Ölçümler"}
+  {id:"kodyapHome", value:"", labelWidth:0, view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 2, yCount: 4},
+  {id: "kodyapVertical", value:"Dikey", labelWidth:53, template:"Dikey"},
+  {id: "kodyapHorizontal", value: "Yatay", labelWidth:53, template:"Yatay"},
+  {id: "kodyapArchieve", value: "Ölçümler", labelWidth:60, template:"Ölçümler"}
 ]
 
+//=============================================================================
+// home
+//=============================================================================
+var winmenuData = [
+  { id: "database", value: "Veritabanı", img: "img/database_100x100_white.png", color: "#008ba0", x: 1, y: 1, width: 1 },
+  { id: "inventory", value: "Demirbaş", img: "img/barcode_100x100_white.png", color: "#535353", x: 2, y: 1, width: 1 },
+  { id: "jupyternb", value: "JupyterNB", img: "img/jupyternb_white_100x100.png", color: "#603cbb", x: 1, y: 2, width: 1 },
+  { id: "kodyap", value: "KODYAP", img: "img/kodyap_100x100.png", color: "#00a300", x: 2, y: 2, width: 1 },
+  // { value: "Finance", img: "icons/03.png", color: "#008ba0", x: 1, y: 1, width: 2 },
+  // { value: "Settings", img: "icons/06.png", color: "#603cbb", x: 1, y: 2, width: 2 },
+  // { value: "People", img: "icons/34.png", color: "#d9532c", x: 1, y: 3, width: 2 },
+  // { value: "Calendar", img: "icons/12.png", color: "#535353", x: 3, y: 1 },
+  // { value: "Store", img: "icons/18.png", color: "#00a300", x: 4, y: 1 },
+  // { value: "Email", img: "icons/20.png", color: "#a400ab", x: 3, y: 2 },
+  // { value: "Music", img: "icons/22.png", color: "#0a57c0", x: 4, y: 2 },
+  // { value: "Photos", img: "icons/09.png", color: "#00889e", x: 3, y: 3, width: 2 }
+];
 // Multiview
 var views = [
-  { id: "home", value: "Ana Sayfa", view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
-  { id: "database", view: "layout", value: "Veritabanı", icon: "database", rows: databaseRows },
-  { id: "inventory", value: "Demirbaş", icon: "barcode", rows: inventoryRows },
-  { id: "storage", value: "Depolama", icon: "cloud", template: "Cloud" },
-  { id: "jupyternb", value: "JupyterNB", view: "iframe", src: "" },
-  { id: "kodyap", value: "KODYAP", cells: kodyapViews, keepViews: true},
+  { id: "home", value: "Ana Sayfa", labelWidth:90, view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
+  { id: "database", view: "layout", value: "Veritabanı", labelWidth:95, icon: "database", rows: databaseRows },
+  { id: "inventory", value: "Demirbaş", labelWidth:90, icon: "barcode", rows: inventoryRows },
+  { id: "storage", value: "Depolama", labelWidth:90, icon: "cloud", template: "Cloud" },
+  { id: "jupyternb", value: "JupyterNB", labelWidth:90, view: "iframe", src: "" },
+  { id: "kodyap", value: "KODYAP", labelWidth:76, cells: kodyapViews, keepViews: true},
 ]
 

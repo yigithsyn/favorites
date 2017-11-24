@@ -5,6 +5,7 @@ import time
 from subprocess import Popen
 import atexit
 import argparse
+from datetime import datetime
 
 # Installed modules
 from flask import Flask, request, redirect, send_from_directory, send_file
@@ -35,7 +36,6 @@ tinydbDatabase = tinydb(str(os.getcwd()) + "\\data\\db.json")
 
 # parse command-line arguments
 parser = argparse.ArgumentParser()
-parser.add_argument("--debug", help="enable debug mode", action="store_true")
 parser.add_argument(
     "--tunnel", help="enable tunnelling to web", action="store_true")
 parser.add_argument("--node", help="run Node.js app", action="store_true")
@@ -57,7 +57,29 @@ processManager = wmi.WMI()
 def static_proxy(path):
   return send_from_directory("www", path)
 
+# =============================================================================
+# Tools
+# =============================================================================
+class SafeRequests:
+  def get(self, url, params=None, timeout=10):
+    status_code = 0
+    start = datetime.now()
+    now = datetime.now()
+    while status_code != 200 and (now - start).seconds <= timeout:
+      try:
+        response = requests.get(url, params)
+        status_code = response.status_code
+        time.sleep(1)
+      except Exception:
+        print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
+      now = datetime.now()
+    if status_code != 200:
+      print({"error": {"type": "api", "msg": "Timeout reached in request"}})
+      return False, None
+    else:
+      return True, response
 
+safeRequest = SafeRequests()
 # =============================================================================
 # TinyDB
 # =============================================================================
@@ -153,6 +175,7 @@ class Download(Resource):
 
 api.add_resource(Download, '/download/<directory>/<file>')
 
+
 # =============================================================================
 # Startup Actions
 # =============================================================================
@@ -180,11 +203,12 @@ node = None
 if args.node:
   try:
     node = Popen(['node', 'app.js'], shell=True)
-    while requests.get("http://127.0.0.1:3000").status_code != 200:
-      time.sleep(1)
-    print("Node.js app started.")
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
+  if not safeRequest.get("http://127.0.0.1:3000", params=None)[0]:
+    print({"error": {"type": "api", "msg": "NodeJS app could not be satarted."}})
+    exit()
+  print("Node.js app started.")
 
 # Tunneling
 if args.tunnel:
@@ -277,7 +301,19 @@ def cleanup():
         time.sleep(1)
     print('JupyterNB app stopped.')
 
-
 atexit.register(cleanup)
 
-app.run(host="0.0.0.0", debug=args.debug, extra_files=["app.js"])
+app.run(host="0.0.0.0")
+
+
+
+
+
+
+
+
+
+
+
+
+

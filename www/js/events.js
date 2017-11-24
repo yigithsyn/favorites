@@ -5,15 +5,29 @@ setTimeout(function () {
     $$("multiview").setValue("home")
   })
 
+  // headerLabel
+  $$("headerLabel1").attachEvent("onItemClick", function () {
+    var value = this.getValue()
+    var view = views.filter(function (item) { return item.value == value })[0]
+    $$(view.id).setValue(view.id + "Home")
+    $$("headerLabel2").hide()
+    $$("headerLabel3").hide()
+    $$("headerLabel12").hide()
+    $$("headerLabel23").hide()
+  }) 
+
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
     $$("multiview").setValue(this.getItem(id).id)
   });
-  
+
   $$("multiview").attachEvent("onChange", function () {
     var id = $$("multiview").getValue()
-    var name = views.filter(function(item){ return item.id == id})[0].value
-    $$("headerLabel1").setValue(name)
+    var view = views.filter(function (item) { return item.id == id })[0]
+    $$(id).setValue(id + "Home")
+    $$("headerLabel1").setValue(view.value)
+    $$("headerLabel1").define("width", view.labelWidth);
+    $$("headerLabel1").resize()
     $$("headerLabel2").hide()
     $$("headerLabel3").hide()
     $$("headerLabel12").hide()
@@ -79,7 +93,7 @@ setTimeout(function () {
 
 
     document.getElementById("inventoryAddItemImage").removeAttribute("hidden")
-    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { withCredentials:false, url: REST.url + "/upload/Inventory", createImageThumbnails: false });
+    var myDropzone = new Dropzone("div#inventoryAddItemImageDropzone", { withCredentials: false, url: REST.url + "/upload/Inventory", createImageThumbnails: false });
     myDropzone.on("success", function (file, res) {
       $$("inventoryItemAddImageList").add({ name: file.name, size: fileSizeToString(file.size), filename: res })
     });
@@ -106,11 +120,13 @@ setTimeout(function () {
   $$("kodyapHome").attachEvent("onItemClick", function (id) {
     $$("kodyap").setValue(this.getItem(id).id)
   });
-  
+
   $$("kodyap").attachEvent("onViewChange", function (prev, next) {
-    var name = kodyapViews.filter(function(item){ return item.id == next})[0].value
-    $$("headerLabel2").setValue(name)
+    var view = kodyapViews.filter(function (item) { return item.id == next })[0]
+    $$("headerLabel2").setValue(view.value)
     $$("headerLabel2").show()
+    $$("headerLabel2").define("width", view.labelWidth);
+    $$("headerLabel2").resize()
     $$("headerLabel3").hide()
     $$("headerLabel12").show()
     $$("headerLabel23").hide()
@@ -118,8 +134,8 @@ setTimeout(function () {
 
   // Manuel events
   REST.registerURL(function (res) {
-    REST.TinyDB.listItems("jupyternb", function(res){
-      if(!res.error){
+    REST.TinyDB.listItems("jupyternb", function (res) {
+      if (!res.error) {
         REST.jupyternb_url += "?token=" + res[0].token
         $$("jupyternb").load(REST.jupyternb_url)
       }

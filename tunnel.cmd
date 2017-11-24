@@ -1,1 +1,1 @@
-clear && nodemon --exec "python app.py --node --jupyternb --tunnel" --watch app.py --watch app.js
+clear && nodemon --exec "python app.py --node --jupyternb --tunnel" --watch app.py --watch app.js --exitcrash
