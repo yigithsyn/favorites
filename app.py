@@ -163,7 +163,8 @@ if args.jupyternb:
   try:
     jupyternb = Popen(['jupyter', 'notebook', "--config",
                        "jupyter_notebook_config.py"], shell=True)
-    time.sleep(10)
+    while len(list(notebookapp.list_running_servers())) == 0:
+      time.sleep(1)
     jupyternb_server = list(notebookapp.list_running_servers())[0]
     table = tinydbDatabase.table("jupyternb")
     if table.get(doc_id=1):
@@ -179,14 +180,14 @@ node = None
 if args.node:
   try:
     node = Popen(['node', 'app.js'], shell=True)
-    time.sleep(3)
+    while requests.get("http://127.0.0.1:3000").status_code != 200:
+      time.sleep(1)
     print("Node.js app started.")
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
 # Tunneling
 if args.tunnel:
-  time.sleep(3)
   if node:
     table = tinydbDatabase.table("ngrok")
     ngrokAuth = table.get(doc_id=1)
