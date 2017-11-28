@@ -1,7 +1,7 @@
 
 // var data2 = [
-  //   { value: "Documents", img: "icons/24.png", color: "#d9532c", x: 1, y: 1, width: 2 },
-  //   { value: "Games", img: "icons/30.png", color: "#008ba0", x: 1, y: 2 },
+//   { value: "Documents", img: "icons/24.png", color: "#d9532c", x: 1, y: 1, width: 2 },
+//   { value: "Games", img: "icons/30.png", color: "#008ba0", x: 1, y: 2 },
 //   { value: "Video", img: "icons/32.png", color: "#a400ab", x: 2, y: 2 }
 // ];
 
@@ -42,9 +42,9 @@ var inventoryRows = [
 function inventoryItemImage(obj) {
   // return '<img src="'+obj.src+'" style="text-align:center;" ondragstart="return false"/>'
   return '<div style="width:100%; height:100%; text-align: center; padding: 0; margin: 0;">' +
-  '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
-  '<img height=90 style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
-  '</div>'
+    '<span style="display: inline-block; height: 100%; vertical-align: middle; padding: 0; margin: 0;" ></span> ' +
+    '<img height=90 style="display: inline-block; vertical-align: middle; padding: 0; margin: 0;" src="' + obj.src + '"/>' +
+    '</div>'
 }
 
 var inventoryItemAdd = {
@@ -74,6 +74,19 @@ var inventoryItemAdd = {
 //=============================================================================
 // kodyap
 //=============================================================================
+var kodyapVerticalMenuData = [
+  { id: "kodyapVerticalMovement", value: "Serbest Hareket", img: "img/mi_directions_100x100.png", color: "#603cbb", x: 1, y: 1 },
+  { id: "kodyapVerticalMeasurement", value: "Ölçüm", img: "img/feather_move_100x100.png", color: "#603cbb", x: 2, y: 1 },
+  { id: "kodyapVerticalSettings", value: "Ayarlar", img: "img/ion_settings_100x100.png", color: "#603cbb", x: 1, y: 2 },
+];
+
+var kodyapVerticalViews = [
+  { id: "kodyapVerticalHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapVerticalMenuData, xCount: 2, yCount: 4 },
+  { id: "kodyapVerticalMovement", value: "Hareket", labelWidth: 70, template: "Hareket" },
+  { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, template: "Ölçümler" },
+  { id: "kodyapVerticalSettings", value: "Ayarlar", labelWidth: 66, template: "Ayarlar" },
+]
+
 var kodyapMenuData = [
   { id: "kodyapVertical", value: "Dikey Sistem", img: "img/fa-arrows-v-100x100.png", color: "#603cbb", x: 1, y: 1 },
   { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/fa-arrows-h-100x100.png", color: "#603cbb", x: 2, y: 1 },
@@ -81,10 +94,10 @@ var kodyapMenuData = [
 ];
 
 var kodyapViews = [
-  {id:"kodyapHome", value:"", labelWidth:0, view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 2, yCount: 4},
-  {id: "kodyapVertical", value:"Dikey", labelWidth:53, template:"Dikey"},
-  {id: "kodyapHorizontal", value: "Yatay", labelWidth:53, template:"Yatay"},
-  {id: "kodyapArchieve", value: "Ölçümler", labelWidth:60, template:"Ölçümler"}
+  { id: "kodyapHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 2, yCount: 4 },
+  { id: "kodyapVertical", value: "Dikey", labelWidth: 53, cells: kodyapVerticalViews, keepViews: true },
+  { id: "kodyapHorizontal", value: "Yatay", labelWidth: 53, template: "Yatay" },
+  { id: "kodyapArchieve", value: "Ölçümler", labelWidth: 60, template: "Ölçümler" }
 ]
 
 //=============================================================================
@@ -106,11 +119,11 @@ var winmenuData = [
 ];
 // Multiview
 var views = [
-  { id: "home", value: "Ana Sayfa", labelWidth:90, view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
-  { id: "database", view: "layout", value: "Veritabanı", labelWidth:95, icon: "database", rows: databaseRows },
-  { id: "inventory", value: "Demirbaş", labelWidth:90, icon: "barcode", rows: inventoryRows },
-  { id: "storage", value: "Depolama", labelWidth:90, icon: "cloud", template: "Cloud" },
-  { id: "jupyternb", value: "JupyterNB", labelWidth:90, view: "iframe", src: "" },
-  { id: "kodyap", value: "KODYAP", labelWidth:76, cells: kodyapViews, keepViews: true},
+  { id: "home", value: "Ana Sayfa", labelWidth: 90, view: "winmenu", borderless: true, data: winmenuData, xCount: 2, yCount: 4 },
+  { id: "database", view: "layout", value: "Veritabanı", labelWidth: 95, icon: "database", rows: databaseRows },
+  { id: "inventory", value: "Demirbaş", labelWidth: 90, icon: "barcode", rows: inventoryRows },
+  { id: "storage", value: "Depolama", labelWidth: 90, icon: "cloud", template: "Cloud" },
+  { id: "jupyternb", value: "JupyterNB", labelWidth: 90, view: "iframe", src: "" },
+  { id: "kodyap", value: "KODYAP", labelWidth: 76, cells: kodyapViews, keepViews: true },
 ]
 

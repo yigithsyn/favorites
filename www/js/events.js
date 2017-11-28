@@ -14,7 +14,7 @@ setTimeout(function () {
     $$("headerLabel3").hide()
     $$("headerLabel12").hide()
     $$("headerLabel23").hide()
-  }) 
+  })
 
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
@@ -24,7 +24,7 @@ setTimeout(function () {
   $$("multiview").attachEvent("onChange", function () {
     var id = $$("multiview").getValue()
     var view = views.filter(function (item) { return item.id == id })[0]
-    $$(id).setValue(id + "Home")
+    if (view.id != "home") $$(view.id).setValue(view.id + "Home")
     $$("headerLabel1").setValue(view.value)
     $$("headerLabel1").define("width", view.labelWidth);
     $$("headerLabel1").resize()
@@ -117,12 +117,26 @@ setTimeout(function () {
   //===========================================================================
   // kodyap
   //===========================================================================
+  $$("kodyapVerticalHome").attachEvent("onItemClick", function (id) {
+    $$("kodyapVertical").setValue(this.getItem(id).id)
+  });
+
+  $$("kodyapVertical").attachEvent("onViewChange", function (prev, next) {
+    var view = kodyapVerticalViews.filter(function (item) { return item.id == next })[0]
+    $$("headerLabel3").setValue(view.value)
+    $$("headerLabel3").show()
+    $$("headerLabel3").define("width", view.labelWidth);
+    $$("headerLabel3").resize()
+    $$("headerLabel23").show()
+  });
+
   $$("kodyapHome").attachEvent("onItemClick", function (id) {
     $$("kodyap").setValue(this.getItem(id).id)
   });
 
   $$("kodyap").attachEvent("onViewChange", function (prev, next) {
     var view = kodyapViews.filter(function (item) { return item.id == next })[0]
+    if (view.id.indexOf("Home") === -1) $$(view.id).setValue(view.id + "Home") 
     $$("headerLabel2").setValue(view.value)
     $$("headerLabel2").show()
     $$("headerLabel2").define("width", view.labelWidth);
