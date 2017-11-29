@@ -75,7 +75,7 @@ var inventoryItemAdd = {
 // kodyap
 //=============================================================================
 var kodyapVerticalMenuData = [
-  { id: "kodyapVerticalMovement", value: "Serbest Hareket", img: "img/mi_directions_100x100.png", color: "#603cbb", x: 1, y: 1 },
+  { id: "kodyapVerticalMovement", value: "Hareket", img: "img/mi_directions_100x100.png", color: "#603cbb", x: 1, y: 1 },
   { id: "kodyapVerticalMeasurement", value: "Ölçüm", img: "img/feather_move_100x100.png", color: "#603cbb", x: 2, y: 1 },
   { id: "kodyapVerticalSettings", value: "Ayarlar", img: "img/ion_settings_100x100.png", color: "#603cbb", x: 1, y: 2 },
 ];

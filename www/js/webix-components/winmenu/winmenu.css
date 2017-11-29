@@ -8,7 +8,7 @@
 	box-shadow: inset 0px 0px 5px 5px rgba(255,255,255,0.5);
 }
 .webix_winmenu_item div{
-	color: #fff; margin-top:8px; text-align: left; padding-left:10px;
+	color: #fff; margin-top:0px; text-align: left; padding-left:10px;
 }
 .webix_winmenu{
 	position:relative;

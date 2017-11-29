@@ -65,7 +65,7 @@ webix.protoUI({
 	},
 	type:{
 		template:function(obj){
-			return "<img src='"+obj.img+"' align='center'><div>"+obj.value+"</div>";
+			return "<img style='padding:5px;' src='"+obj.img+"' align='center'><div>"+obj.value+"</div>";
 		},
 		classname:function(obj, common, marks){
 			var css = "webix_winmenu_item";
