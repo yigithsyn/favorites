@@ -1,1 +1,1 @@
-clear && nodemon --exec "python app.py --node --jupyternb" --watch app.py --watch app.js --exitcrash
+clear && nodemon --exec "python app.py --node --jupyternb --matlab" --watch app.py --watch app.js --exitcrash

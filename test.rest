@@ -48,3 +48,18 @@ GET http://127.0.0.1:5000/ngrok
 # Download
 ####################################
 GET http://127.0.0.1:5000/download/Demirbaş/15112486034535072-Belgeler.xlsx
+
+
+####################################
+# OPCClient
+####################################
+# List OPC servers
+GET http://127.0.0.1:5000/opcclient
+
+####################################
+# Create opc client
+POST http://127.0.0.1:5000/opcclient/OPC.IwSCP.1
+
+####################################
+# Status of opc client
+GET  http://127.0.0.1:5000/opcclient/OPC.IwSCP.1/opcClient15120491570692322
