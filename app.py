@@ -88,7 +88,6 @@ safeRequest = SafeRequests()
 # =============================================================================
 # JupyterNB
 jupyternb = None
-jupyternb_server = {"token": None}
 if args.jupyternb:
   try:
     jupyternb = Popen(['jupyter', 'notebook', "--config",
@@ -96,11 +95,6 @@ if args.jupyternb:
     while len(list(notebookapp.list_running_servers())) == 0:
       time.sleep(1)
     jupyternb_server = list(notebookapp.list_running_servers())[0]
-    table = tinydbDatabase.table("jupyternb")
-    if table.get(doc_id=1):
-      table.update(jupyternb_server, doc_ids=[1])
-    else:
-      table.insert(jupyternb_server)
     print("JupyterNB app started.")
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
@@ -129,55 +123,6 @@ if args.matlab:
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
-# Ngrok
-if args.tunnel:
-  if node:
-    table = tinydbDatabase.table("ngrok")
-    ngrokAuth = table.get(doc_id=1)
-    r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
-    if r.status_code != 200:
-      print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
-    elif "error" in r.json().keys():
-      print(r.json())
-    else:
-      if "url" in r.json().keys():
-        mlabr = requests.get(
-            "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-        if mlabr.status_code != 200:
-          print(
-              {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-        else:
-          mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                               mlabr.json()[0]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
-          if mlabr.status_code != 200:
-            print(
-                {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-          else:
-            print("Python app tunnelled through: " + r.json()["url"])
-    if jupyternb:
-      ngrokAuth = table.get(doc_id=2)
-      r = requests.post("http://127.0.0.1:3000/ngrok", data=ngrokAuth)
-      if r.status_code != 200:
-        print({"error": {"type": "api", "msg": "Connection to Node.js app failed."}})
-      elif "error" in r.json().keys():
-        print(r.json())
-      else:
-        if "url" in r.json().keys():
-          mlabr = requests.get(
-              "https://api.mlab.com/api/1/databases/hsyn/collections/ngrok?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d")
-          if mlabr.status_code != 200:
-            print(
-                {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-          else:
-            mlabr = requests.put("https://api.mlab.com/api/1/databases/hsyn/collections/ngrok/" +
-                                 mlabr.json()[1]["_id"]["$oid"] + "?apiKey=Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d", json=r.json())
-            if mlabr.status_code != 200:
-              print(
-                  {"error": {"type": "api", "msg": "Connection to remote database mLab failed."}})
-            else:
-              print("JupyterNB app tunnelled through: " + r.json()["url"])
-
-
 # At exit cleaning
 def killProcess(proc_pid):
   process = psutil.Process(proc_pid)
@@ -197,7 +142,6 @@ def cleanup():
     matlab.quit()
 
 atexit.register(cleanup)
-
 # =============================================================================
 # OPC
 # =============================================================================
