@@ -51,15 +51,35 @@ GET http://127.0.0.1:5000/download/Demirbaş/15112486034535072-Belgeler.xlsx
 
 
 ####################################
-# OPCClient
+# opc
 ####################################
 # List OPC servers
-GET http://127.0.0.1:5000/opcclient
+GET http://127.0.0.1:5000/opc
 
 ####################################
 # Create opc client
-POST http://127.0.0.1:5000/opcclient/OPC.IwSCP.1
+POST http://127.0.0.1:5000/opc/OPC.IwSCP.1
 
 ####################################
 # Status of opc client
-GET  http://127.0.0.1:5000/opcclient/OPC.IwSCP.1/opcClient15120491570692322
+GET  http://127.0.0.1:5000/opc/OPC.IwSCP.1
+
+####################################
+# Read item
+# GET  http://127.0.0.1:5000/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.z_pos_hizi
+GET  http://127.0.0.1:5000/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.yatay_tarama_op
+####################################
+# Write item
+# PUT  http://127.0.0.1:5000/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.z_pos_hizi
+# content-type: application/json
+
+# {
+#   "value": 10002
+# }
+
+PUT  http://127.0.0.1:5000/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.yatay_tarama_op
+content-type: application/json
+
+{
+  "value": "false"
+}

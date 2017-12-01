@@ -1,7 +1,7 @@
 {
   "files.autoSave": "afterDelay",
   "git.enableSmartCommit": true,
-  "files.autoSaveDelay": 10000,
+  "files.autoSaveDelay": 60000,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "python.linting.pylintCategorySeverity.convention": "Hint",

@@ -187,22 +187,11 @@ def killProcess(proc_pid):
 
 def cleanup():
   time.sleep(3)
-  processes = ["node.exe", "jupyter-notebook.exe"]
   if node != None:
     killProcess(node.pid)
-    while processes.count("node.exe") > 0:
-      processes = []
-      for process in processManager.Win32_Process():
-        processes.append(process.Name)
-      time.sleep(1)
     print('Node.js app stopped.')
   if jupyternb != None:
     killProcess(jupyternb.pid)
-    while processes.count("jupyter.exe") > 0:
-      processes = []
-      for process in processManager.Win32_Process():
-        processes.append(process.Name)
-      time.sleep(1)
     print('JupyterNB app stopped.')
   if matlab != None:
     matlab.quit()
@@ -210,71 +199,76 @@ def cleanup():
 atexit.register(cleanup)
 
 # =============================================================================
-# TinyDB
+# OPC
 # =============================================================================
+opcServers = {}
+
 class OPC(Resource):
   def get(self):
     return matlab.opcserverinfo('localhost',nargout=1)["ServerID"]
 
 class OPCServer(Resource):
   def post(self, server):
-    opcClient = "opcClient"+str(time.time()).replace(".", "")
-    matlab.eval(opcClient +" = opcda('localhost','" + server + "')", nargout=0)
+    opcClient = "opcClient"+server.replace(".","")
+    opcItemGroup = "opcItemGroup"+server.replace(".","")
+    matlab.eval(opcClient + " = opcda('localhost','"+server+"')", nargout=0)
+    matlab.eval("connect("+ opcClient +")",nargout=0)
+    print(opcItemGroup + " = addgroup("+opcClient+")")
+    matlab.eval(opcItemGroup + " = addgroup("+opcClient+")", nargout=0)
     matlab.eval("opcClientStatus = " + opcClient + ".Status", nargout=0)
-    return { opcClient : matlab.workspace["opcClientStatus"]}
+    opcServers[server] = {"id": server, "client": opcClient, "status":  matlab.workspace["opcClientStatus"], "itemGroup": opcItemGroup, "items":[]}
+    return opcServers[server]
 
-class OPCClient(Resource):
-  def get(self, server, client):
-    matlab.eval("opcClientStatus = " + client + ".Status", nargout=0)
-    if matlab.workspace["opcClientStatus"] == "connected":
-      serverItems = matlab.serverItems(client,"*",nargout=1)
-    return { "status": matlab.workspace["opcClientStatus"], "items": serverItems} 
+  def get(self, server):
+    matlab.eval("opcClientStatus = " + opcServers[server]["client"] + ".Status", nargout=0)
+    opcServers[server]["status"] = matlab.workspace["opcClientStatus"]
+    return opcServers[server]
 
-# class TinyDB_Table(Resource):
-#   def get(self, table):
-#     table = tinydbDatabase.table(table)
-#     items = []
-#     for item in table.all():
-#       item["id"] = item.doc_id
-#       items.append(item)
-#     return items
+class OPCItem(Resource):
+  def get(self, server, item):
+    isExist = False
+    opcItem = ""
+    for it in opcServers[server]["items"]:
+      if it["name"] == item:
+        isExist = True
+        opcItem = it["id"]
+        break
+    if not isExist:
+      opcItem = "opcItem" + str(len(opcServers[server]["items"]))
+      matlab.eval(opcItem + " = additem("+ opcServers[server]["itemGroup"] + ",'" + item +"')", nargout=0)
+      opcServers[server]["items"].append({"id": opcItem, "name": item})
+    quality = ""
+    while "Good" not in quality:
+      matlab.eval("opcReadStatus = read("+ opcItem + ")", nargout=0)
+      matlab.eval("opcReadQuality = opcReadStatus.Quality", nargout=0)
+      quality = matlab.workspace["opcReadQuality"]
+    matlab.eval("opcReadValue = opcReadStatus.Value", nargout=0)
+    return matlab.workspace["opcReadValue"]
 
-#   def post(self, table):
-#     table = tinydbDatabase.table(table)
-#     return table.insert(request.json)
+  def put(self, server, item):
+    isExist = False
+    opcItem = ""
+    for it in opcServers[server]["items"]:
+      if it["name"] == item:
+        isExist = True
+        opcItem = it["id"]
+        break
+    if not isExist:
+      opcItem = "opcItem" + str(len(opcServers[server]["items"]))
+      matlab.eval(opcItem + " = additem("+ opcServers[server]["itemGroup"] + ",'" + item +"')", nargout=0)
+      opcServers[server]["items"].append({"id": opcItem, "name": item})
+    matlab.eval("write("+ opcItem + ","+ str(request.json["value"])+")", nargout=0)
+    quality = ""
+    while "Good" not in quality:
+      matlab.eval("opcReadStatus = read("+ opcItem + ")", nargout=0)
+      matlab.eval("opcReadQuality = opcReadStatus.Quality", nargout=0)
+      quality = matlab.workspace["opcReadQuality"]
+    matlab.eval("opcReadValue = opcReadStatus.Value", nargout=0)
+    return matlab.workspace["opcReadValue"]
 
-# class TinyDB_Item(Resource):
-#   def get(self, table, doc_id):
-#     table = tinydbDatabase.table(table)
-#     try:
-#       item = table.get(doc_id=int(doc_id))
-#       item["id"] = doc_id
-#       return item
-#     except Exception:
-#       return {"error": {"type": "api", "msg": "TinyDB_Item: GET\n" + str(traceback.format_exc())}}
-
-#   def post(self, table, doc_id):
-#     table = tinydbDatabase.table(table)
-#     try:
-#       table.update(request.json(), doc_ids=[int(doc_id)])
-#       return {}
-#     except Exception:
-#       return {"error": {"type": "api", "msg": "TinyDB_Item: PUT\n" + str(traceback.format_exc())}}
-
-#   def delete(self, table, doc_id):
-#     table = tinydbDatabase.table(table)
-#     try:
-#       table.remove(doc_ids=[int(doc_id)])
-#       return {}
-#     except Exception:
-#       return {"error": {"type": "api", "msg": "TinyDB_Item: DEL\n" + str(traceback.format_exc())}}
-
-
-api.add_resource(OPC, '/opcclient')
-api.add_resource(OPCServer, '/opcclient/<server>')
-api.add_resource(OPCClient, '/opcclient/<server>/<client>')
-# api.add_resource(TinyDB_Table, '/tinydb/<table>')
-# api.add_resource(TinyDB_Item, '/tinydb/<table>/<doc_id>')
+api.add_resource(OPC, '/opc')
+api.add_resource(OPCServer, '/opc/<server>')
+api.add_resource(OPCItem, '/opc/<server>/<item>')
 
 # =============================================================================
 # TinyDB
