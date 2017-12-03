@@ -74,19 +74,241 @@ var inventoryItemAdd = {
 //=============================================================================
 // kodyap
 //=============================================================================
+//-----------------------------------------------------------------------------
+// kodyapVertical
+//-----------------------------------------------------------------------------
+//.............................................................................
+// kodyapVerticalMovement
+//.............................................................................
+var kodyapVerticalMovementAxisX = {
+  id: "kodyapVerticalMovementX",
+  value: "X",
+  rows: [
+    {
+      cols: [
+        { id: "kodyapVerticalMovementXPos", view: "text", label: "Anlık Konum", labelWidth: 140, readonly: true },
+        { view: "label", label: "mm", width: 60, align: "left" },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementXSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
+        { view: "label", label: "mm/dk", align: "left", width: 60 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementXMoveHome", view: "button", label: "Sıfırla", gravity: 1 },
+        { id: "kodyapVerticalMovementXMoveCenter", view: "button", label: "Ortala", gravity: 1 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementXMoveAbsVal", view: "text", label: "Git (Mutlak)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapVerticalMovementXMoveAbs", view: "button", label: "Git", width: 100 }
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementXMoveRelVal", view: "text", label: "Git (Göreceli)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapVerticalMovementXMoveRel", view: "button", label: "Git", width: 100 },
+      ]
+    },
+  ]
+}
+
+var kodyapVerticalMovementAxisY = {
+  id: "kodyapVerticalMovementY",
+  value: "Y",
+  rows: [
+    {
+      cols: [
+        { id: "kodyapVerticalMovementYPos", view: "text", label: "Anlık Konum", labelWidth: 140, readonly: true },
+        { view: "label", label: "mm", width: 60, align: "left" },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementYSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
+        { view: "label", label: "mm/dk", align: "left", width: 60 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementYMoveHome", view: "button", label: "Sıfırla", gravity: 1 },
+        { id: "kodyapVerticalMovementYMoveCenter", view: "button", label: "Ortala", gravity: 1 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementYMoveAbsVal", view: "text", label: "Git (Mutlak)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapVerticalMovementYMoveAbs", view: "button", label: "Git", width: 100 }
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapVerticalMovementYMoveRelVal", view: "text", label: "Git (Göreceli)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapVerticalMovementYMoveRel", view: "button", label: "Git", width: 100 },
+      ]
+    },
+  ]
+}
+
+var kodyapVerticalMovementAxisViews = [
+  kodyapVerticalMovementAxisX,
+  kodyapVerticalMovementAxisY
+]
+
+var kodyapVerticalMovementRows = [
+  { template: "camera" },
+  { id: "kodyapVerticalMovementAxis", borderless: true, view: "tabbar", multiview: true, options: kodyapVerticalMovementAxisViews },
+  { cells: kodyapVerticalMovementAxisViews, keepViews: true }
+]
+
+//.............................................................................
+// kodyapVerticalMeasurement
+//.............................................................................
+var kodyapVerticalMeasurementScanArea = {
+  view: "fieldset",
+  label: "Tarama Alanı",
+  body: {
+    rows: [
+      {
+        cols: [
+          {
+            cols: [
+              { id: "kodyapVerticalMeasurementScanAreaX0", view: "text", label: "x0: ", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+          {
+            cols: [
+              { id: "kodyapVerticalMeasurementScanAreaY0", view: "text", label: "y0: ", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          }
+        ],
+        margin: 15
+      },
+      {
+        cols: [
+          {
+            cols: [
+              { id: "kodyapVerticalMeasurementScanAreaLx", view: "text", label: "Lx:", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+          {
+            cols: [
+              { id: "kodyapVerticalMeasurementScanAreaLy", view: "text", label: "Ly:", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+        ],
+        margin: 15
+      },
+      { id: "kodyapVerticalMeasurementScanAreaSquareScan", view: "checkbox", label: "Kare Tarama:", labelWidth: 100 }
+    ]
+  },
+}
+
+var kodyapVerticalMeasurementFrequency = {
+  view: "fieldset",
+  label: "Frekans",
+  body: {
+    rows: [
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementFrequencyFreq", view: "text", label: "Frekans: ", labelWidth: 100 },
+          { view: "label", label: "GHz", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementFrequencyWavelen", view: "text", label: "Dalga Boyu: ", labelWidth: 100 },
+          { view: "label", label: "mm", align: "left", width: 50 },
+        ]
+      },
+    ]
+  },
+}
+
+kodyapVerticalMeasurementSampling =   {
+  view: "fieldset",
+  label: "Örnekleme",
+  body: {
+    rows: [
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementSamplingD", view: "text", label: "Sıklığı:", labelWidth: 100, readonly: true },
+          { view: "label", label: "mm", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementSamplingN", view: "text", label: "Sayısı:", labelWidth: 100, readonly: true },
+          { view: "label", label: "", align: "left", width: 50 },
+        ], hidden: true
+      },
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementSamplingNx", view: "text", label: "Sayısı (X):", labelWidth: 100, readonly: true },
+          { view: "label", label: "", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapVerticalMeasurementSamplingNy", view: "text", label: "Sayısı (Y):", labelWidth: 100, readonly: true },
+          { view: "label", label: "", align: "left", width: 50 },
+        ]
+      },
+    ]
+  },
+}
+
+kodyapVerticalMeasurementLogging =  {
+  view: "fieldset",
+  label: "Kayıt",
+  body: {
+    rows: [
+      { id: "kodyapVerticalMeasurementLoggingName", view: "text", labelWidth: 100, label: "Ölçüm adı:", value: "Deneme" },
+    ]
+  },
+}
+
+var kodyapVerticalMeasurementRows = [
+  kodyapVerticalMeasurementScanArea,
+  kodyapVerticalMeasurementFrequency,
+  kodyapVerticalMeasurementSampling,
+  kodyapVerticalMeasurementLogging,
+  { id: "kodyapVerticalMeasurementStart", view: "button", label: "Başlat" },
+]
+
+//.............................................................................
+// kodyapVerticalHome
+//.............................................................................
 var kodyapVerticalMenuData = [
   { id: "kodyapVerticalMovement", value: "Hareket", img: "img/mi_directions_100x100.png", color: "#603cbb", x: 1, y: 1 },
   { id: "kodyapVerticalMeasurement", value: "Ölçüm", img: "img/feather_move_100x100.png", color: "#603cbb", x: 2, y: 1 },
-  { id: "kodyapVerticalSettings", value: "Ayarlar", img: "img/ion_settings_100x100.png", color: "#603cbb", x: 1, y: 2 },
 ];
 
 var kodyapVerticalViews = [
   { id: "kodyapVerticalHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapVerticalMenuData, xCount: 2, yCount: 4 },
-  { id: "kodyapVerticalMovement", value: "Hareket", labelWidth: 70, template: "Hareket" },
-  { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, template: "Ölçümler" },
-  { id: "kodyapVerticalSettings", value: "Ayarlar", labelWidth: 66, template: "Ayarlar" },
+  { id: "kodyapVerticalMovement", value: "Hareket", labelWidth: 70, rows: kodyapVerticalMovementRows },
+  { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, rows: kodyapVerticalMeasurementRows, margin:15 },
 ]
 
+//-----------------------------------------------------------------------------
+// kodyapHome
+//-----------------------------------------------------------------------------
 var kodyapMenuData = [
   { id: "kodyapVertical", value: "Dikey Sistem", img: "img/fa-arrows-v-100x100.png", color: "#603cbb", x: 1, y: 1 },
   { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/fa-arrows-h-100x100.png", color: "#603cbb", x: 2, y: 1 },

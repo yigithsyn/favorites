@@ -16,6 +16,15 @@ setTimeout(function () {
     $$("headerLabel23").hide()
   })
 
+  $$("headerLabel2").attachEvent("onItemClick", function () {
+    var parent = $$("headerLabel1").getValue()
+    var parentView = views.filter(function (item) { return item.value == parent })[0]
+    var view = $$(parentView.id).getValue()
+    $$(view).setValue(view + "Home")
+    $$("headerLabel3").hide()
+    $$("headerLabel23").hide()
+  })
+
   // Multiview
   $$("home").attachEvent("onItemClick", function (id) {
     $$("multiview").setValue(this.getItem(id).id)
