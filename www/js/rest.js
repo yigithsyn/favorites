@@ -1,5 +1,5 @@
 var REST = {
-  url: "http://127.0.0.1:5000",
+  url: "",
   jupyternb_url: "http://127.0.0.1:8888",
   registerURL: function (callback = function () { }) {
     REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
@@ -8,7 +8,7 @@ var REST = {
         REST.jupyternb_url = res[1].url
         REST.TinyDB.listTables(function(res){
           if(res.error){
-            REST.url = "http://127.0.0.1:5000",
+            REST.url = "",
             REST.jupyternb_url = "http://127.0.0.1:8888",
             callback(REST.url)
           }
