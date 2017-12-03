@@ -1,6 +1,9 @@
 var verticalScanner = {
   simulation: false,
-
+  Lx: 4000,
+  Ly: 2000,
+  x0: 2000,
+  y0: 1000,
   connect: function (callback = function () { }) {
     webix.ajax().post(REST.url + "/opc/OPC.IwSCP.1", {
       error: function (t, d, x) {
@@ -120,8 +123,8 @@ var verticalScanner = {
   move: function (axis, type, target, posUpdate = function () { }, callback = function () { }) {
     var currPos = 0
     var stopTarget = 0
-    verticalScanner.getPosition(axis, function (value) { 
-      currPos = value 
+    verticalScanner.getPosition(axis, function (value) {
+      currPos = value
       stopTarget = (type == "abs") ? parseInt(target) : currPos + parseInt(target)
     })
     async.series([
@@ -270,7 +273,7 @@ var verticalScanner = {
         callback(err)
       })
   },
-  getTriggerState: function(callback = function(){}){
+  getTriggerState: function (callback = function () { }) {
     webix.ajax().get(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.dikey_tarama_op", {
       error: function (t, d, x) {
         if (!verticalScanner.simulation) {
@@ -292,7 +295,7 @@ var verticalScanner = {
       }
     })
   },
-  setTriggerState: function(value, callback = function(){}){
+  setTriggerState: function (value, callback = function () { }) {
     webix.ajax().headers({
       "Content-type": "application/json"
     }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.dikey_tarama_op", { value: value }, {

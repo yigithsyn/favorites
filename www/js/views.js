@@ -181,14 +181,14 @@ var kodyapVerticalMeasurementScanArea = {
         cols: [
           {
             cols: [
-              { id: "kodyapVerticalMeasurementScanAreaX0", view: "text", label: "x0: ", labelWidth: 35 },
+              { id: "kodyapVerticalMeasurementScanAreaX0", view: "text", label: "x0: ", value: verticalScanner.x0, labelWidth: 35 },
               { view: "label", label: "mm", width: 50, align: "left" },
             ],
             gravity: 1,
           },
           {
             cols: [
-              { id: "kodyapVerticalMeasurementScanAreaY0", view: "text", label: "y0: ", labelWidth: 35 },
+              { id: "kodyapVerticalMeasurementScanAreaY0", view: "text", label: "y0: ", value: verticalScanner.y0, labelWidth: 35 },
               { view: "label", label: "mm", width: 50, align: "left" },
             ],
             gravity: 1,
@@ -241,7 +241,7 @@ var kodyapVerticalMeasurementFrequency = {
   },
 }
 
-kodyapVerticalMeasurementSampling =   {
+kodyapVerticalMeasurementSampling = {
   view: "fieldset",
   label: "Örnekleme",
   body: {
@@ -251,12 +251,6 @@ kodyapVerticalMeasurementSampling =   {
           { id: "kodyapVerticalMeasurementSamplingD", view: "text", label: "Sıklığı:", labelWidth: 100, readonly: true },
           { view: "label", label: "mm", align: "left", width: 50 },
         ]
-      },
-      {
-        cols: [
-          { id: "kodyapVerticalMeasurementSamplingN", view: "text", label: "Sayısı:", labelWidth: 100, readonly: true },
-          { view: "label", label: "", align: "left", width: 50 },
-        ], hidden: true
       },
       {
         cols: [
@@ -274,7 +268,7 @@ kodyapVerticalMeasurementSampling =   {
   },
 }
 
-kodyapVerticalMeasurementLogging =  {
+kodyapVerticalMeasurementLogging = {
   view: "fieldset",
   label: "Kayıt",
   body: {
@@ -303,7 +297,8 @@ var kodyapVerticalMenuData = [
 var kodyapVerticalViews = [
   { id: "kodyapVerticalHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapVerticalMenuData, xCount: 2, yCount: 4 },
   { id: "kodyapVerticalMovement", value: "Hareket", labelWidth: 70, rows: kodyapVerticalMovementRows },
-  { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, rows: kodyapVerticalMeasurementRows, margin:15 },
+  { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, rows: kodyapVerticalMeasurementRows, margin: 15 },
+  { id: "kodyapVerticalMeasurementRun", value: "Ölçülüyor...", labelWidth: 100, rows: [{template:"deneme"}]},
 ]
 
 //-----------------------------------------------------------------------------

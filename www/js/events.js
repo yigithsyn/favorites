@@ -134,20 +134,20 @@ setTimeout(function () {
 
   $$("kodyapVerticalMovementXMoveHome").attachEvent("onItemClick", function () {
     verticalScanner.move("x", "abs", 0,
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementXPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
   $$("kodyapVerticalMovementYMoveHome").attachEvent("onItemClick", function () {
     verticalScanner.move("y", "abs", 0,
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementYPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
@@ -155,20 +155,20 @@ setTimeout(function () {
 
   $$("kodyapVerticalMovementXMoveCenter").attachEvent("onItemClick", function () {
     verticalScanner.move("x", "abs", 2000,
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementXPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
   $$("kodyapVerticalMovementYMoveCenter").attachEvent("onItemClick", function () {
     verticalScanner.move("y", "abs", 1000,
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementYPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
@@ -176,46 +176,173 @@ setTimeout(function () {
 
   $$("kodyapVerticalMovementXMoveAbs").attachEvent("onItemClick", function () {
     verticalScanner.move("x", "abs", $$("kodyapVerticalMovementXMoveAbsVal").getValue(),
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementXPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
   $$("kodyapVerticalMovementYMoveAbs").attachEvent("onItemClick", function () {
     verticalScanner.move("y", "abs", $$("kodyapVerticalMovementYMoveAbsVal").getValue(),
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementYPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
-  
+
   $$("kodyapVerticalMovementXMoveRel").attachEvent("onItemClick", function () {
     verticalScanner.move("x", "rel", $$("kodyapVerticalMovementXMoveRelVal").getValue(),
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementXPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
   $$("kodyapVerticalMovementYMoveRel").attachEvent("onItemClick", function () {
     verticalScanner.move("y", "rel", $$("kodyapVerticalMovementYMoveRelVal").getValue(),
-      function (value) { 
+      function (value) {
         $$("kodyapVerticalMovementYPos").setValue(value)
       },
-      function(){
+      function () {
         console.log("Hareket tamamlandı.")
       }
     )
   })
 
+  //...........................................................................
+  // kodyapVerticalMeasurement
+  //...........................................................................
+  $$("kodyapVerticalMeasurementScanAreaX0").attachEvent("onChange", function (newv, oldv) { $$("kodyapVerticalMeasurementFrequencyFreq").callEvent("onChange", [$$("kodyapVerticalMeasurementFrequencyFreq").getValue(), 0]) })
+  $$("kodyapVerticalMeasurementScanAreaY0").attachEvent("onChange", function (newv, oldv) { $$("kodyapVerticalMeasurementFrequencyFreq").callEvent("onChange", [$$("kodyapVerticalMeasurementFrequencyFreq").getValue(), 0]) })
+
+  $$("kodyapVerticalMeasurementScanAreaLx").attachEvent("onChange", function (newv, oldv) { $$("kodyapVerticalMeasurementFrequencyFreq").callEvent("onChange", [$$("kodyapVerticalMeasurementFrequencyFreq").getValue(), 0]) })
+  $$("kodyapVerticalMeasurementScanAreaLy").attachEvent("onChange", function (newv, oldv) { $$("kodyapVerticalMeasurementFrequencyFreq").callEvent("onChange", [$$("kodyapVerticalMeasurementFrequencyFreq").getValue(), 0]) })
+
+  $$("kodyapVerticalMeasurementScanAreaSquareScan").attachEvent("onChange", function (newv, oldv) {
+    if (newv === 0) {
+      $$("kodyapVerticalMeasurementScanAreaLy").define("disabled", false)
+      $$("kodyapVerticalMeasurementSamplingNy").define("disabled", false)
+    }
+    else {
+      $$("kodyapVerticalMeasurementFrequencyFreq").callEvent("onChange", [$$("kodyapVerticalMeasurementFrequencyFreq").getValue(), 0])
+      $$("kodyapVerticalMeasurementScanAreaLy").define("disabled", true)
+      $$("kodyapVerticalMeasurementSamplingNy").define("disabled", true)
+    }
+  })
+
+  $$("kodyapVerticalMeasurementFrequencyWavelen").attachEvent("onChange", function (newv, oldv) {
+    var wavelength = parseFloat(newv)
+    if (wavelength) {
+      var freq = 3E8 / (wavelength / 1E3) / 1E9
+      $$("kodyapVerticalMeasurementFrequencyFreq").setValue(freq.toFixed(2))
+    }
+  })
+
+  $$("kodyapVerticalMeasurementFrequencyFreq").attachEvent("onChange", function (newv, oldv) {
+    var freq = parseFloat(newv)
+    if (freq) {
+      var wavelength = 3E8 / (freq * 1E9) * 1E3
+      $$('kodyapVerticalMeasurementFrequencyWavelen').blockEvent();
+      $$("kodyapVerticalMeasurementFrequencyWavelen").setValue(wavelength.toFixed(2))
+      $$('kodyapVerticalMeasurementFrequencyWavelen').unblockEvent();
+      var d = Math.floor(wavelength / 2)
+      $$("kodyapVerticalMeasurementSamplingD").setValue(d)
+
+      // x-axis 
+      if ($$("kodyapVerticalMeasurementScanAreaLx").getValue()) {
+        var N = 0
+        var L = parseFloat($$("kodyapVerticalMeasurementScanAreaLx").getValue())
+        var x0 = parseFloat($$("kodyapVerticalMeasurementScanAreaX0").getValue())
+        async.whilst(
+          function () { return L % d !== 0; },
+          function (callback) { L++; callback() },
+          function (err) {
+            async.whilst(
+              function () { return L > verticalScanner.Lx || L / 2 > Math.min(verticalScanner.Lx - x0, x0); },
+              function (callback) { L -= d; callback() },
+              function (err) {
+                N = L / d + 1
+                $$('kodyapVerticalMeasurementScanAreaLx').blockEvent();
+                if (N % 2 == 0) {
+                  $$("kodyapVerticalMeasurementScanAreaLx").setValue(N * d)
+                  N += 1
+                  if ((N - 1) * d > verticalScanner.Lx || (N - 1) * d / 2 > Math.min(verticalScanner.Lx - x0, x0)) {
+                    N -= 2
+                    $$("kodyapVerticalMeasurementScanAreaLx").setValue((N - 1) * d)
+                  }
+                }
+                else {
+                  $$("kodyapVerticalMeasurementScanAreaLx").setValue(L)
+                }
+                $$("kodyapVerticalMeasurementSamplingNx").setValue(N)
+                if ($$("kodyapVerticalMeasurementScanAreaSquareScan").getValue() === 1) {
+                  if (L > verticalScanner.Ly) {
+                    $$("kodyapVerticalMeasurementScanAreaSquareScan").setValue(0)
+                    setTimeout(function () { $$("kodyapVerticalMeasurementScanAreaLy").define("disabled", false) }, 100)
+                    setTimeout(function () { $$("kodyapVerticalMeasurementSamplingNy").define("disabled", false) }, 100)
+                  }
+                  else $$("kodyapVerticalMeasurementScanAreaLy").setValue($$("kodyapVerticalMeasurementScanAreaLx").getValue())
+                }
+                $$('kodyapVerticalMeasurementScanAreaLx').unblockEvent();
+              }
+            )
+          }
+        )
+      }
+      // y-axis
+      if ($$("kodyapVerticalMeasurementScanAreaLy").getValue()) {
+        var N = 0
+        var L = parseFloat($$("kodyapVerticalMeasurementScanAreaLy").getValue())
+        var y0 = parseFloat($$("kodyapVerticalMeasurementScanAreaY0").getValue())
+        async.whilst(
+          function () { return L % d !== 0; },
+          function (callback) { L++; callback() },
+          function (err) {
+            async.whilst(
+              function () { return L > verticalScanner.Ly || L / 2 > Math.min(verticalScanner.Ly - y0, y0); },
+              function (callback) { L -= d; callback() },
+              function (err) {
+                N = L / d + 1
+                $$("kodyapVerticalMeasurementScanAreaLy").blockEvent();
+                if (N % 2 == 0) {
+                  $$("kodyapVerticalMeasurementScanAreaLy").setValue(N * d)
+                  N += 1
+                  if ((N - 1) * d > verticalScanner.Ly || (N - 1) * d / 2 > Math.min(verticalScanner.Ly - y0, y0)) {
+                    N -= 2
+                    $$("kodyapVerticalMeasurementScanAreaLy").setValue((N - 1) * d)
+                  }
+                }
+                else {
+                  $$("kodyapVerticalMeasurementScanAreaLy").setValue(L)
+                }
+                $$("kodyapVerticalMeasurementSamplingNy").setValue(N)
+                if ($$("kodyapVerticalMeasurementScanAreaSquareScan").getValue() === 1) {
+                  if (L > verticalScanner.Lx) {
+                    $$("kodyapVerticalMeasurementScanAreaSquareScan").setValue(0)
+                    setTimeout(function () { $$("kodyapVerticalMeasurementScanAreaLx").define("disabled", false) }, 100)
+                    setTimeout(function () { $$("kodyapVerticalMeasurementSamplingx").define("disabled", false) }, 100)
+                  }
+                  else $$("kodyapVerticalMeasurementScanAreaLx").setValue($$("kodyapVerticalMeasurementScanAreaLy").getValue())
+                }
+                $$("kodyapVerticalMeasurementScanAreaLy").unblockEvent();
+              }
+            )
+          }
+        )
+      }
+    }
+  })
+
+  $$("kodyapVerticalMeasurementStart").attachEvent("onItemClick", function () {
+    $$("kodyapVertical").setValue("kodyapVerticalMeasurementRun")
+  });
 
   //---------------------------------------------------------------------------
   // kodyapVertical
