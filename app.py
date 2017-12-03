@@ -17,7 +17,22 @@ import requests
 from notebook import notebookapp
 import wmi
 import psutil
-import matlab.engine as matlabEngine
+
+# locally installed modules
+try:
+  import matlab.engine as matlabEngine
+except:
+  pass
+
+# parse command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--tunnel", help="enable tunnelling to web", action="store_true")
+parser.add_argument("--node", help="run Node.js app", action="store_true")
+parser.add_argument(
+    "--jupyternb", help="run Jupyter Notebook app", action="store_true")
+parser.add_argument("--matlab", help="run Matlab app", action="store_true")
+args = parser.parse_args()
 
 # create directory if does not exists
 def createDirectory(directory):
@@ -30,20 +45,11 @@ def createDirectory(directory):
 
 createDirectory("data")
 createDirectory("data/Inventory")
-createDirectory("data/JupyterNB")
+if args.jupyternb:
+  createDirectory("data/JupyterNB")
 
 # database
 tinydbDatabase = tinydb(str(os.getcwd()) + "\\data\\db.json")
-
-# parse command-line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--tunnel", help="enable tunnelling to web", action="store_true")
-parser.add_argument("--node", help="run Node.js app", action="store_true")
-parser.add_argument(
-    "--jupyternb", help="run Jupyter Notebook app", action="store_true")
-parser.add_argument("--matlab", help="run Matlab app", action="store_true")
-args = parser.parse_args()
 
 # run flask app
 app = Flask(__name__, static_folder='www')
@@ -81,6 +87,7 @@ class SafeRequests:
     else:
       return True, response
 
+
 safeRequest = SafeRequests()
 
 # =============================================================================
@@ -111,7 +118,7 @@ if args.node:
     exit()
   print("Node.js app started.")
 
-# MATLAB 
+# MATLAB
 matlab = None
 if args.matlab:
   try:
@@ -141,6 +148,7 @@ def cleanup():
   if matlab != None:
     matlab.quit()
 
+
 atexit.register(cleanup)
 # =============================================================================
 # OPC
@@ -149,22 +157,24 @@ opcServers = {}
 
 class OPC(Resource):
   def get(self):
-    return matlab.opcserverinfo('localhost',nargout=1)["ServerID"]
+    return matlab.opcserverinfo('localhost', nargout=1)["ServerID"]
 
 class OPCServer(Resource):
   def post(self, server):
-    opcClient = "opcClient"+server.replace(".","")
-    opcItemGroup = "opcItemGroup"+server.replace(".","")
-    matlab.eval(opcClient + " = opcda('localhost','"+server+"')", nargout=0)
-    matlab.eval("connect("+ opcClient +")",nargout=0)
-    print(opcItemGroup + " = addgroup("+opcClient+")")
-    matlab.eval(opcItemGroup + " = addgroup("+opcClient+")", nargout=0)
+    opcClient = "opcClient" + server.replace(".", "")
+    opcItemGroup = "opcItemGroup" + server.replace(".", "")
+    matlab.eval(opcClient + " = opcda('localhost','" + server + "')", nargout=0)
+    matlab.eval("connect(" + opcClient + ")", nargout=0)
+    print(opcItemGroup + " = addgroup(" + opcClient + ")")
+    matlab.eval(opcItemGroup + " = addgroup(" + opcClient + ")", nargout=0)
     matlab.eval("opcClientStatus = " + opcClient + ".Status", nargout=0)
-    opcServers[server] = {"id": server, "client": opcClient, "status":  matlab.workspace["opcClientStatus"], "itemGroup": opcItemGroup, "items":[]}
+    opcServers[server] = {"id": server, "client": opcClient,
+                          "status": matlab.workspace["opcClientStatus"], "itemGroup": opcItemGroup, "items": []}
     return opcServers[server]
 
   def get(self, server):
-    matlab.eval("opcClientStatus = " + opcServers[server]["client"] + ".Status", nargout=0)
+    matlab.eval("opcClientStatus = " +
+                opcServers[server]["client"] + ".Status", nargout=0)
     opcServers[server]["status"] = matlab.workspace["opcClientStatus"]
     return opcServers[server]
 
@@ -179,11 +189,12 @@ class OPCItem(Resource):
         break
     if not isExist:
       opcItem = "opcItem" + str(len(opcServers[server]["items"]))
-      matlab.eval(opcItem + " = additem("+ opcServers[server]["itemGroup"] + ",'" + item +"')", nargout=0)
+      matlab.eval(opcItem + " = additem(" +
+                  opcServers[server]["itemGroup"] + ",'" + item + "')", nargout=0)
       opcServers[server]["items"].append({"id": opcItem, "name": item})
     quality = ""
     while "Good" not in quality:
-      matlab.eval("opcReadStatus = read("+ opcItem + ")", nargout=0)
+      matlab.eval("opcReadStatus = read(" + opcItem + ")", nargout=0)
       matlab.eval("opcReadQuality = opcReadStatus.Quality", nargout=0)
       quality = matlab.workspace["opcReadQuality"]
     matlab.eval("opcReadValue = opcReadStatus.Value", nargout=0)
@@ -199,16 +210,19 @@ class OPCItem(Resource):
         break
     if not isExist:
       opcItem = "opcItem" + str(len(opcServers[server]["items"]))
-      matlab.eval(opcItem + " = additem("+ opcServers[server]["itemGroup"] + ",'" + item +"')", nargout=0)
+      matlab.eval(opcItem + " = additem(" +
+                  opcServers[server]["itemGroup"] + ",'" + item + "')", nargout=0)
       opcServers[server]["items"].append({"id": opcItem, "name": item})
-    matlab.eval("write("+ opcItem + ","+ str(request.json["value"])+")", nargout=0)
+    matlab.eval("write(" + opcItem + "," +
+                str(request.json["value"]) + ")", nargout=0)
     quality = ""
     while "Good" not in quality:
-      matlab.eval("opcReadStatus = read("+ opcItem + ")", nargout=0)
+      matlab.eval("opcReadStatus = read(" + opcItem + ")", nargout=0)
       matlab.eval("opcReadQuality = opcReadStatus.Quality", nargout=0)
       quality = matlab.workspace["opcReadQuality"]
     matlab.eval("opcReadValue = opcReadStatus.Value", nargout=0)
     return matlab.workspace["opcReadValue"]
+
 
 api.add_resource(OPC, '/opc')
 api.add_resource(OPCServer, '/opc/<server>')
@@ -310,16 +324,3 @@ class Download(Resource):
 api.add_resource(Download, '/download/<directory>/<file>')
 
 app.run(host="0.0.0.0")
-
-
-
-
-
-
-
-
-
-
-
-
-
