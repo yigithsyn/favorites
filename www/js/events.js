@@ -126,6 +126,100 @@ setTimeout(function () {
   //===========================================================================
   // kodyap
   //===========================================================================
+  //...........................................................................
+  // kodyapVerticalMovement
+  //...........................................................................
+  $$("kodyapVerticalMovementXSpeed").attachEvent("onChange", function (newv, oldv) { verticalScanner.setSpeed("x", newv) })
+  $$("kodyapVerticalMovementYSpeed").attachEvent("onChange", function (newv, oldv) { verticalScanner.setSpeed("y", newv) })
+
+  $$("kodyapVerticalMovementXMoveHome").attachEvent("onItemClick", function () {
+    verticalScanner.move("x", "abs", 0,
+      function (value) { 
+        $$("kodyapVerticalMovementXPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+  $$("kodyapVerticalMovementYMoveHome").attachEvent("onItemClick", function () {
+    verticalScanner.move("y", "abs", 0,
+      function (value) { 
+        $$("kodyapVerticalMovementYPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+
+  $$("kodyapVerticalMovementXMoveCenter").attachEvent("onItemClick", function () {
+    verticalScanner.move("x", "abs", 2000,
+      function (value) { 
+        $$("kodyapVerticalMovementXPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+  $$("kodyapVerticalMovementYMoveCenter").attachEvent("onItemClick", function () {
+    verticalScanner.move("y", "abs", 1000,
+      function (value) { 
+        $$("kodyapVerticalMovementYPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+
+  $$("kodyapVerticalMovementXMoveAbs").attachEvent("onItemClick", function () {
+    verticalScanner.move("x", "abs", $$("kodyapVerticalMovementXMoveAbsVal").getValue(),
+      function (value) { 
+        $$("kodyapVerticalMovementXPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+  $$("kodyapVerticalMovementYMoveAbs").attachEvent("onItemClick", function () {
+    verticalScanner.move("y", "abs", $$("kodyapVerticalMovementYMoveAbsVal").getValue(),
+      function (value) { 
+        $$("kodyapVerticalMovementYPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+  
+  $$("kodyapVerticalMovementXMoveRel").attachEvent("onItemClick", function () {
+    verticalScanner.move("x", "rel", $$("kodyapVerticalMovementXMoveRelVal").getValue(),
+      function (value) { 
+        $$("kodyapVerticalMovementXPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+  $$("kodyapVerticalMovementYMoveRel").attachEvent("onItemClick", function () {
+    verticalScanner.move("y", "rel", $$("kodyapVerticalMovementYMoveRelVal").getValue(),
+      function (value) { 
+        $$("kodyapVerticalMovementYPos").setValue(value)
+      },
+      function(){
+        console.log("Hareket tamamlandı.")
+      }
+    )
+  })
+
+
+  //---------------------------------------------------------------------------
+  // kodyapVertical
+  //---------------------------------------------------------------------------
   $$("kodyapVerticalHome").attachEvent("onItemClick", function (id) {
     $$("kodyapVertical").setValue(this.getItem(id).id)
   });
@@ -139,13 +233,16 @@ setTimeout(function () {
     $$("headerLabel23").show()
   });
 
+  //---------------------------------------------------------------------------
+  // kodyapHome
+  //---------------------------------------------------------------------------
   $$("kodyapHome").attachEvent("onItemClick", function (id) {
     $$("kodyap").setValue(this.getItem(id).id)
   });
 
   $$("kodyap").attachEvent("onViewChange", function (prev, next) {
     var view = kodyapViews.filter(function (item) { return item.id == next })[0]
-    if (view.id.indexOf("Home") === -1) $$(view.id).setValue(view.id + "Home") 
+    if (view.id.indexOf("Home") === -1) $$(view.id).setValue(view.id + "Home")
     $$("headerLabel2").setValue(view.value)
     $$("headerLabel2").show()
     $$("headerLabel2").define("width", view.labelWidth);
@@ -153,6 +250,14 @@ setTimeout(function () {
     $$("headerLabel3").hide()
     $$("headerLabel12").show()
     $$("headerLabel23").hide()
+    if (next == "kodyapVertical") {
+      verticalScanner.connect(function (res) {
+        verticalScanner.getPosition("x", function (res) { $$("kodyapVerticalMovementXPos").setValue(res) })
+        verticalScanner.getPosition("y", function (res) { $$("kodyapVerticalMovementYPos").setValue(res) })
+        verticalScanner.getSpeed("x", function (res) { $$("kodyapVerticalMovementXSpeed").setValue(res) })
+        verticalScanner.getSpeed("y", function (res) { $$("kodyapVerticalMovementYSpeed").setValue(res) })
+      })
+    }
   });
 
   // Manuel events

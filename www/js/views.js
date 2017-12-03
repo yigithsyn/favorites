@@ -93,7 +93,7 @@ var kodyapVerticalMovementAxisX = {
     {
       cols: [
         { id: "kodyapVerticalMovementXSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
-        { view: "label", label: "mm/dk", align: "left", width: 60 },
+        { view: "label", label: "m/dk", align: "left", width: 60 },
       ]
     },
     {
@@ -132,7 +132,7 @@ var kodyapVerticalMovementAxisY = {
     {
       cols: [
         { id: "kodyapVerticalMovementYSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
-        { view: "label", label: "mm/dk", align: "left", width: 60 },
+        { view: "label", label: "m/dk", align: "left", width: 60 },
       ]
     },
     {

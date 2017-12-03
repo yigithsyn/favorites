@@ -2,23 +2,24 @@ var REST = {
   url: "",
   jupyternb_url: "http://127.0.0.1:8888",
   registerURL: function (callback = function () { }) {
-    REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
-      if (!res.error) {
-        REST.url = res[0].url
-        REST.jupyternb_url = res[1].url
-        REST.TinyDB.listTables(function(res){
-          if(res.error){
-            REST.url = "",
-            REST.jupyternb_url = "http://127.0.0.1:8888",
-            callback(REST.url)
-          }
-          else callback(REST.url)
-        })
-      }
-      else {
-        callback(res)
-      }
-    })
+    // REST.mLab.listItems("hsyn", "ngrok", {}, false, function (res) {
+    //   if (!res.error) {
+    //     REST.url = res[0].url
+    //     REST.jupyternb_url = res[1].url
+    //     REST.TinyDB.listTables(function(res){
+    //       if(res.error){
+    //         REST.url = "",
+    //         REST.jupyternb_url = "http://127.0.0.1:8888",
+    //         callback(REST.url)
+    //       }
+    //       else callback(REST.url)
+    //     })
+    //   }
+    //   else {
+    //     callback(res)
+    //   }
+    // })
+    callback("")
   },
   TinyDB: {
     listTables: function (callback = function () { }) {

@@ -165,12 +165,11 @@ class OPCServer(Resource):
     opcItemGroup = "opcItemGroup" + server.replace(".", "")
     matlab.eval(opcClient + " = opcda('localhost','" + server + "')", nargout=0)
     matlab.eval("connect(" + opcClient + ")", nargout=0)
-    print(opcItemGroup + " = addgroup(" + opcClient + ")")
     matlab.eval(opcItemGroup + " = addgroup(" + opcClient + ")", nargout=0)
     matlab.eval("opcClientStatus = " + opcClient + ".Status", nargout=0)
     opcServers[server] = {"id": server, "client": opcClient,
                           "status": matlab.workspace["opcClientStatus"], "itemGroup": opcItemGroup, "items": []}
-    return opcServers[server]
+    return matlab.workspace["opcClientStatus"]
 
   def get(self, server):
     matlab.eval("opcClientStatus = " +
