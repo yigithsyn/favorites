@@ -63,7 +63,7 @@ var verticalScanner = {
       },
       success: function (t, d, x) {
         if (!verticalScanner.simulation) {
-          callback(parseInt((parseInt(d.json().item[1]) / 1000 + 1) / 10))
+          callback(parseInt((parseInt(d.json()) / 1000 + 1) / 10))
         }
         else {
           webix.message("Benzetim modu")
@@ -99,7 +99,7 @@ var verticalScanner = {
     axis = (axis == "y") ? "z" : axis
     webix.ajax().headers({
       "Content-type": "application/json"
-    }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,." + axis + "_pos_hizi", { value: parseInt(value) }, {
+    }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,." + axis + "_pos_hizi", { value: parseInt(value)*1000 }, {
       error: function (t, d, x) {
         if (!verticalScanner.simulation) {
           callback({ error: { type: "server", source: "verticalScanner.setSpeed", msg: d.json() } })
@@ -111,7 +111,7 @@ var verticalScanner = {
       },
       success: function (t, d, x) {
         if (!verticalScanner.simulation) {
-          callback(parseInt(d.json() / 10000))
+          callback(parseInt(d.json() / 1000))
         }
         else {
           webix.message("Benzetim modu")
@@ -121,6 +121,7 @@ var verticalScanner = {
     })
   },
   move: function (axis, type, target, posUpdate = function () { }, callback = function () { }) {
+    axis = (axis == "y") ? "z" : axis
     var currPos = 0
     var stopTarget = 0
     verticalScanner.getPosition(axis, function (value) {
@@ -131,7 +132,7 @@ var verticalScanner = {
       function (callback) {
         webix.ajax().headers({
           "Content-type": "application/json"
-        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: false }, {
+        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: "false" }, {
           error: function (t, d, x) {
             if (!verticalScanner.simulation) {
               callback({ error: { type: "server", source: "verticalScanner.move", msg: d.json() } })
@@ -156,7 +157,7 @@ var verticalScanner = {
       function (callback) {
         webix.ajax().headers({
           "Content-type": "application/json"
-        }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_pos_op", { value: parseInt(target) }, {
+        }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_pos_op", { value: parseInt(target)*10000 }, {
           error: function (t, d, x) {
             if (!verticalScanner.simulation) {
               callback({ error: { type: "server", source: "verticalScanner.move", msg: d.json() } })
@@ -181,7 +182,7 @@ var verticalScanner = {
       function (callback) {
         webix.ajax().headers({
           "Content-type": "application/json"
-        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: true }, {
+        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: "true" }, {
           error: function (t, d, x) {
             if (!verticalScanner.simulation) {
               callback({ error: { type: "server", source: "verticalScanner.move", msg: d.json() } })
@@ -209,7 +210,7 @@ var verticalScanner = {
             return true
           },
           function (callback) {
-            webix.ajax().get(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,." + axis + "_pos_ok", {
+            webix.ajax().get(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type  + "_pos_ok", {
               error: function (t, d, x) {
                 if (!verticalScanner.simulation) {
                   callback({ error: { type: "server", source: "verticalScanner.move", msg: d.json() } })
@@ -246,7 +247,7 @@ var verticalScanner = {
       function (callback) {
         webix.ajax().headers({
           "Content-type": "application/json"
-        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: false }, {
+        }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.m_" + axis + "_" + type + "_posa_git_op", { value: "false" }, {
           error: function (t, d, x) {
             if (!verticalScanner.simulation) {
               callback({ error: { type: "server", source: "verticalScanner.move", msg: d.json() } })
@@ -299,6 +300,52 @@ var verticalScanner = {
     webix.ajax().headers({
       "Content-type": "application/json"
     }).put(REST.url + "/opc/OPC.IwSCP.1/!BOOL,HCS02.1,Plc.PVL,.dikey_tarama_op", { value: value }, {
+      error: function (t, d, x) {
+        if (!verticalScanner.simulation) {
+          callback({ error: { type: "server", source: "verticalScanner.setTriggerState", msg: d.json() } })
+        }
+        else {
+          webix.message("Benzetim modu")
+          callback()
+        }
+      },
+      success: function (t, d, x) {
+        if (!verticalScanner.simulation) {
+          callback()
+        }
+        else {
+          webix.message("Benzetim modu")
+          callback()
+        }
+      }
+    })
+  },
+  getTriggerStep: function (callback = function () { }) {
+    webix.ajax().get(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.tarama_araligi_op", {
+      error: function (t, d, x) {
+        if (!verticalScanner.simulation) {
+          callback({ error: { type: "server", source: "verticalScanner.getTriggerState", msg: d.json() } })
+        }
+        else {
+          webix.message("Benzetim modu")
+          callback(1000)
+        }
+      },
+      success: function (t, d, x) {
+        if (!verticalScanner.simulation) {
+          callback(parseInt(d.json() / 10000))
+        }
+        else {
+          webix.message("Benzetim modu")
+          callback(1000)
+        }
+      }
+    })
+  },
+  setTriggerStep: function (value, callback = function () { }) {
+    webix.ajax().headers({
+      "Content-type": "application/json"
+    }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.tarama_araligi_op", { value: parseInt(value)*10000 }, {
       error: function (t, d, x) {
         if (!verticalScanner.simulation) {
           callback({ error: { type: "server", source: "verticalScanner.setTriggerState", msg: d.json() } })
