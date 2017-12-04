@@ -287,6 +287,19 @@ var kodyapVerticalMeasurementRows = [
 ]
 
 //.............................................................................
+// kodyapVerticalMeasurementRun
+//.............................................................................
+var kodyapVerticalMeasurementRunRows = [
+  {
+    view: "toolbar", elements: [
+      { id: "kodyapVerticalMeasurementRunLabel", view: "label", align: "center", label: "" },
+    ]
+  },
+  { id: "plot", height: 450 },
+  { id: "kodyapVerticalMeasurementRunStop", view: "button", type: "danger", label: "Durdur" },
+]
+
+//.............................................................................
 // kodyapVerticalHome
 //.............................................................................
 var kodyapVerticalMenuData = [
@@ -298,7 +311,7 @@ var kodyapVerticalViews = [
   { id: "kodyapVerticalHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapVerticalMenuData, xCount: 2, yCount: 4 },
   { id: "kodyapVerticalMovement", value: "Hareket", labelWidth: 70, rows: kodyapVerticalMovementRows },
   { id: "kodyapVerticalMeasurement", value: "Ölçüm", labelWidth: 60, rows: kodyapVerticalMeasurementRows, margin: 15 },
-  { id: "kodyapVerticalMeasurementRun", value: "Ölçülüyor...", labelWidth: 100, rows: [{template:"deneme"}]},
+  { id: "kodyapVerticalMeasurementRun", value: "Ölçülüyor...", labelWidth: 100, rows: kodyapVerticalMeasurementRunRows, margin: 15 },
 ]
 
 //-----------------------------------------------------------------------------
