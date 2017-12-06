@@ -353,22 +353,24 @@ setTimeout(function () {
     $$("kodyapVerticalMeasurementRunLabel").setValue($$("kodyapVerticalMeasurementLoggingName").getValue())
     $$("kodyapVertical").setValue("kodyapVerticalMeasurementRun")
 
-    setTimeout(function(){
-      plotLayout.xaxis.range = plotLayout.xaxis2.range = [-(Nx-1)/2-0.5, (Nx-1)/2+0.5]
-      plotLayout.yaxis.range = plotLayout.yaxis2.range = [-(Ny-1)/2-0.5, (Ny-1)/2+0.5]
+    var meas = { name: $$("kodyapVerticalMeasurementLoggingName").getValue(), data: { amp: [], phase: [] } }
+
+    setTimeout(function () {
+      plotLayout.xaxis.range = plotLayout.xaxis2.range = [-(Nx - 1) / 2 - 0.5, (Nx - 1) / 2 + 0.5]
+      plotLayout.yaxis.range = plotLayout.yaxis2.range = [-(Ny - 1) / 2 - 0.5, (Ny - 1) / 2 + 0.5]
       plotLayout.width = parseInt($$("plot").getNode().style.width)
       plotLayout.height = parseInt($$("plot").getNode().style.height)
       Plotly.newPlot($$("plot").getNode(), plotData, plotLayout);
-      plotTrace1.x = _.range(-(Nx-1)/2, (Nx-1)/2 + 1)
-      plotTrace2.x = _.range(-(Nx-1)/2, (Nx-1)/2 + 1)
-      plotTrace1.y = _.range(-(Ny-1)/2, (Ny-1)/2 + 1)
-      plotTrace2.y = _.range(-(Ny-1)/2, (Ny-1)/2 + 1)
-    },2000)
+      plotTrace1.x = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
+      plotTrace2.x = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
+      plotTrace1.y = _.range(-(Ny - 1) / 2, (Ny - 1) / 2 + 1)
+      plotTrace2.y = _.range(-(Ny - 1) / 2, (Ny - 1) / 2 + 1)
+    }, 2000)
 
     async.series([
       function (callback) { vectorNetworkAnalyzer.initialize(callback) },
       function (callback) { vectorNetworkAnalyzer.setFrequency(freq, callback) },
-      function (callback) { vectorNetworkAnalyzer.setSweepPoints(Ny, callback) },
+      function (callback) { vectorNetworkAnalyzer.setSweepPoints(Ny - 1, callback) },
 
       function (callback) { verticalScanner.setTriggerState("false", callback) },
       function (callback) { verticalScanner.setTriggerStep(d, callback) },
@@ -378,86 +380,74 @@ setTimeout(function () {
           verticalScanner.move("y", "abs", y0 - Ly / 2, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
             async.eachSeries(_.range(1, Nx + 1),
               function (item, callback) {
+                var amp0 = 0;
+                var phase0 = 0;
                 async.series([
-                  // function (callback) { vectorNetworkAnalyzer.setTriggerManuel(callback) },
-                  // function (callback) { vectorNetworkAnalyzer.triggerManuel(callback) },
+                  function (callback) { vectorNetworkAnalyzer.setTriggerManuel(callback) },
+                  function (callback) { vectorNetworkAnalyzer.triggerManuel(callback) },
+                  function (callback) {
+                    vectorNetworkAnalyzer.getTraceData(1, function (data) {
+                      amp0 = data[0]
+                      vectorNetworkAnalyzer.getTraceData(2, function (data) {
+                        phase0 = data[0]
+                        callback()
+                      })
+                    })
+                  },
                   function (callback) { verticalScanner.setTriggerState("true", callback) },
-                  // function (callback) { vectorNetworkAnalyzer.setTriggerExternal(callback) },
+                  function (callback) { vectorNetworkAnalyzer.setTriggerExternal(callback) },
                   function (callback) {
                     if (item % 2 == 1) {
-                      verticalScanner.move("y","rel", 10, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                        verticalScanner.setTriggerState("true", function () {
-                          verticalScanner.setTriggerStep(10, function () {
-                            verticalScanner.move("y","rel", -10, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                              verticalScanner.setTriggerStep(d, function () {
-                                verticalScanner.move("y", "rel", Ly, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                                  vectorNetworkAnalyzer.getTraceData(1, function (data) {
-                                    amplitude = data
-                                    plotTrace2.z[item - 1] = amplitude
-                                    // meas.data.amp.push(data)
-                                    vectorNetworkAnalyzer.getTraceData(2, function (data) {
-                                      phase = data
-                                      plotTrace1.z[item - 1] = phase
-                                      plotData = [plotTrace1, plotTrace2];
-                                      Plotly.update($$("plot").getNode(), plotData, plotLayout)
-                                      // meas.data.phase.push(data)
-                                    })
-                                  })
-                                  if (item < Nx) verticalScanner.move("x", "rel", d, function (value) { $$("kodyapVerticalMovementXPos").setValue(value) }, callback)
-                                  else callback("Finished.")
-                                })
-                              })
-                            })
+                      verticalScanner.move("y", "rel", Ly, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
+                        vectorNetworkAnalyzer.getTraceData(1, function (data) {
+                          data.unshift(amp0)
+                          plotTrace2.z[item - 1] = data
+                          meas.data.amp.push(data)
+                          vectorNetworkAnalyzer.getTraceData(2, function (data) {
+                            data.unshift(phase0)
+                            plotTrace1.z[item - 1] = data
+                            meas.data.phase.push(data)
+                            plotData = [plotTrace1, plotTrace2];
+                            Plotly.update($$("plot").getNode(), plotData, plotLayout)
                           })
                         })
-                      })               
+                        if (item < Nx) verticalScanner.move("x", "rel", d, function (value) { $$("kodyapVerticalMovementXPos").setValue(value) }, callback)
+                        else callback("Finished.")
+                      })
                     }
                     else {
-                      verticalScanner.move("y","rel", -10, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                        verticalScanner.setTriggerState("true", function () {
-                          verticalScanner.setTriggerStep(10, function () {
-                            verticalScanner.move("y","rel", 10, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                              verticalScanner.setTriggerStep(d, function () {
-                                verticalScanner.move("y", "rel", -Ly, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
-                                  vectorNetworkAnalyzer.getTraceData(1, function (data) {
-                                    amplitude = data
-                                    plotTrace2.z[item - 1] = amplitude.reverse()
-                                    // meas.data.amp.push(data)
-                                    vectorNetworkAnalyzer.getTraceData(2, function (data) {
-                                      phase = data
-                                      plotTrace1.z[item - 1] = phase.reverse()
-                                      plotData = [plotTrace1, plotTrace2];
-                                      Plotly.update($$("plot").getNode(), plotData, plotLayout)
-                                      // meas.data.phase.push(data)
-                                    })
-                                  })
-                                  if (item < Nx) verticalScanner.move("x", "rel", d, function (value) { $$("kodyapVerticalMovementXPos").setValue(value) }, callback)
-                                  else callback("Finished.")
-                                })
-                              })
-                            })
+                      verticalScanner.move("y", "rel", -Ly, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
+                        vectorNetworkAnalyzer.getTraceData(1, function (data) {
+                          data.unshift(amp0)
+                          data.reverse()
+                          plotTrace2.z[item - 1] = data
+                          meas.data.amp.push(data)
+                          vectorNetworkAnalyzer.getTraceData(2, function (data) {
+                            data.unshift(phase0)
+                            data.reverse()
+                            plotTrace1.z[item - 1] = data
+                            meas.data.phase.push(data)
+                            plotData = [plotTrace1, plotTrace2];
+                            Plotly.update($$("plot").getNode(), plotData, plotLayout)
                           })
                         })
-                      })     
+                        if (item < Nx) verticalScanner.move("x", "rel", d, function (value) { $$("kodyapVerticalMovementXPos").setValue(value) }, callback)
+                        else callback("Finished.")
+                      })
                     }
                   },
                   function (callback) { verticalScanner.setTriggerState("false", callback) },
                 ], function (err) {
-                  // console.log("Satır ", item, " bitti")
                   callback()
                 })
               },
               function (err) {
                 setTimeout(function () {
-                  // webix.ajax().post("http://" + $$("restIP").getValue() + ":5001/mongodb/meas/archive", meas, function (t, d, x) {
-                  //   webix.message("Veritabanına eklendi.")
-                  // })
-
-                  // var data = "text/json; charset = utf-8," + encodeURIComponent(JSON.stringify(meas))
-                  // var a = document.createElement('a')
-                  // a.href = 'data: ' + data;
-                  // a.download = "ölçüm.json"
-                  // a.click()
+                  var data = "text/json; charset = utf-8," + encodeURIComponent(JSON.stringify(meas))
+                  var a = document.createElement('a')
+                  a.href = 'data: ' + data;
+                  a.download = "ölçüm.json"
+                  a.click()
                   webix.message("Tarama tamamlandı.")
                   callback()
                 }, 3000)

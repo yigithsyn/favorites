@@ -345,7 +345,7 @@ var verticalScanner = {
   setTriggerStep: function (value, callback = function () { }) {
     webix.ajax().headers({
       "Content-type": "application/json"
-    }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.tarama_araligi_op", { value: parseInt(value)*10000-1000 }, {
+    }).put(REST.url + "/opc/OPC.IwSCP.1/!I4,HCS02.1,Plc.PVL,.tarama_araligi_op", { value: parseInt(value)*10000-500 }, {
       error: function (t, d, x) {
         if (!verticalScanner.simulation) {
           callback({ error: { type: "server", source: "verticalScanner.setTriggerState", msg: d.json() } })
