@@ -357,15 +357,17 @@ setTimeout(function () {
 
     setTimeout(function () {
       plotLayout.xaxis.range = plotLayout.xaxis2.range = [-(Nx - 1) / 2 - 0.5, (Nx - 1) / 2 + 0.5]
-      plotLayout.yaxis.range = plotLayout.yaxis2.range = [-(Ny - 1) / 2 - 0.5, (Ny - 1) / 2 + 0.5]
+      plotLayout.yaxis.range = plotLayout.yaxis2.range = [-(Nx - 1) / 2 - 0.5, (Nx - 1) / 2 + 0.5]
       plotLayout.width = parseInt($$("plot").getNode().style.width)
       plotLayout.height = parseInt($$("plot").getNode().style.height)
       Plotly.newPlot($$("plot").getNode(), plotData, plotLayout);
       plotTrace1.x = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
       plotTrace2.x = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
-      plotTrace1.y = _.range(-(Ny - 1) / 2, (Ny - 1) / 2 + 1)
-      plotTrace2.y = _.range(-(Ny - 1) / 2, (Ny - 1) / 2 + 1)
+      plotTrace1.y = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
+      plotTrace2.y = _.range(-(Nx - 1) / 2, (Nx - 1) / 2 + 1)
     }, 2000)
+    plotDataAmp = []
+    plotDataPhase = []
 
     async.series([
       function (callback) { vectorNetworkAnalyzer.initialize(callback) },
@@ -401,11 +403,25 @@ setTimeout(function () {
                       verticalScanner.move("y", "rel", Ly, function (value) { $$("kodyapVerticalMovementYPos").setValue(value) }, function () {
                         vectorNetworkAnalyzer.getTraceData(1, function (data) {
                           data.unshift(amp0)
-                          plotTrace2.z[item - 1] = data
+                          if (Nx > Ny) {
+                            for (i = 0; i < (Nx - Ny) / 2; i++) {
+                              data.unshift(0)
+                              data.push(0)
+                            }
+                          }
+                          plotDataAmp[item - 1] = data
+                          plotTrace1.z = _.zip.apply(_, plotDataAmp)
                           meas.data.amp.push(data)
                           vectorNetworkAnalyzer.getTraceData(2, function (data) {
                             data.unshift(phase0)
-                            plotTrace1.z[item - 1] = data
+                            if (Nx > Ny) {
+                              for (i = 0; i < (Nx - Ny) / 2; i++) {
+                                data.unshift(0)
+                                data.push(0)
+                              }
+                            }
+                            plotDataPhase[item - 1] = data
+                            plotTrace2.z = _.zip.apply(_, plotDataPhase)
                             meas.data.phase.push(data)
                             plotData = [plotTrace1, plotTrace2];
                             Plotly.update($$("plot").getNode(), plotData, plotLayout)
@@ -420,12 +436,26 @@ setTimeout(function () {
                         vectorNetworkAnalyzer.getTraceData(1, function (data) {
                           data.unshift(amp0)
                           data.reverse()
-                          plotTrace2.z[item - 1] = data
+                          if (Nx > Ny) {
+                            for (i = 0; i < (Nx - Ny) / 2; i++) {
+                              data.unshift(0)
+                              data.push(0)
+                            }
+                          }
+                          plotDataAmp[item - 1] = data
+                          plotTrace1.z = _.zip.apply(_, plotDataAmp)
                           meas.data.amp.push(data)
                           vectorNetworkAnalyzer.getTraceData(2, function (data) {
                             data.unshift(phase0)
                             data.reverse()
-                            plotTrace1.z[item - 1] = data
+                            if (Nx > Ny) {
+                              for (i = 0; i < (Nx - Ny) / 2; i++) {
+                                data.unshift(0)
+                                data.push(0)
+                              }
+                            }
+                            plotDataPhase[item - 1] = data
+                            plotTrace2.z = _.zip.apply(_, plotDataPhase)
                             meas.data.phase.push(data)
                             plotData = [plotTrace1, plotTrace2];
                             Plotly.update($$("plot").getNode(), plotData, plotLayout)

@@ -10,11 +10,12 @@ Plotly.setPlotConfig({
 var plotLayout = {
   showlegend: false,
   autosize: false,
-  margin: { l: 50, r: 25, b: 25, t: 15, pad: 4 },
-  yaxis: { domain: [0, .400] },
+  title: "Genlik ve Faz",
+  margin: { l: 50, r: 25, b: 25, t: 25, pad: 4 },
+  yaxis: { title: "Genlik", domain: [0, .400] },
   xaxis: { anchor: 'y1' },
   xaxis2: { anchor: 'y2' },
-  yaxis2: { domain: [0.595, 1] },
+  yaxis2: { title: "Faz", domain: [0.595, 1] },
 };
 
 // Line plot
