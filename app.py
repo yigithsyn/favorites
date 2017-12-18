@@ -155,13 +155,14 @@ atexit.register(cleanup)
 # =============================================================================
 # VISA Library
 # =============================================================================
+print("Here")
 try:
     rm = visa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
 except visa.LibraryError:
     print("Visa: Library error: Not found.")
 
 instruments = {}
-
+print("Here")
 class VISA(Resource):
     def post(self, instr):
         try:
