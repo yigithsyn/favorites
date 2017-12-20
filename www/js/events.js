@@ -543,7 +543,7 @@ setTimeout(function () {
   REST.registerURL(function (res) {
     REST.TinyDB.listItems("jupyternb", function (res) {
       if (!res.error) {
-        REST.jupyternb_url += "?token=" + res[0].token
+        //REST.jupyternb_url += "?token=" + res[0].token
         $$("jupyternb").load(REST.jupyternb_url)
       }
       else console.log(res)

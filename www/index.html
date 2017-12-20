@@ -128,16 +128,26 @@
     // Body
     webix.ui.fullScreen();
     webix.ui({
-      id: "body",
-      rows: [
-        toolbar,
-        multiview,
-        // { view: "button" }
-      ],
+      cols: [
+        { id: "leftBlankSpace" },
+        {
+          id: "body",
+          rows: [
+            toolbar,
+            multiview,
+            // { view: "button" }
+          ]
+        },
+        { id: "rightBlankSpace" }
+      ]
     });
-    if (!isMobile.any()) {
+    if (!isMobile.any() || window.innerWidth > window.innerHeight / 1.8) {
       $$("body").define("width", $$("body").$height / 2)
       $$("body").resize()
+      $$("leftBlankSpace").define("width", (window.innerWidth - $$("body").$height / 2) / 2)
+      $$("leftBlankSpace").resize()
+      $$("rightBlankSpace").define("width", (window.innerWidth - $$("body").$height / 2) / 2)
+      $$("rightBlankSpace").resize()
     }
 
 
