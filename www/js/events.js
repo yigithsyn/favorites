@@ -539,6 +539,28 @@ setTimeout(function () {
     }
   });
 
+  //===========================================================================
+  // atam
+  //===========================================================================
+  //---------------------------------------------------------------------------
+  // atamHome
+  //---------------------------------------------------------------------------
+  $$("atamHome").attachEvent("onItemClick", function (id) {
+    $$("atam").setValue(this.getItem(id).id)
+  });
+
+  $$("atam").attachEvent("onViewChange", function (prev, next) {
+    var view = atamViews.filter(function (item) { return item.id == next })[0]
+    // if (view.id.indexOf("Home") === -1) $$(view.id).setValue(view.id + "Home")
+    $$("headerLabel2").setValue(view.value)
+    $$("headerLabel2").show()
+    $$("headerLabel2").define("width", view.labelWidth);
+    $$("headerLabel2").resize()
+    $$("headerLabel3").hide()
+    $$("headerLabel12").show()
+    $$("headerLabel23").hide()
+  });
+
   // Manuel events
   REST.registerURL(function (res) {
     REST.TinyDB.listItems("jupyternb", function (res) {
