@@ -45,12 +45,13 @@ def createDirectory(directory):
 
 
 createDirectory("data")
+createDirectory("data/TinyDB")
 createDirectory("data/Inventory")
 if args.jupyternb:
   createDirectory("data/JupyterNB")
 
 # database
-tinydbDatabase = tinydb(str(os.getcwd()) + "\\data\\db.json")
+tinydbDatabase = tinydb(str(os.getcwd()) + "\\data\\TinyDB\\db.json")
 
 # run flask app
 app = Flask(__name__, static_folder='www')
