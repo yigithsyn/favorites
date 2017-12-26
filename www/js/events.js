@@ -543,6 +543,44 @@ setTimeout(function () {
   // atam
   //===========================================================================
   //---------------------------------------------------------------------------
+  // atamMeasScheduler
+  //---------------------------------------------------------------------------
+  scheduler.config.xml_date = "%d.%m.%Y %H:%i";
+  scheduler.config.time_step = 60
+  scheduler.config.first_hour = 9
+  scheduler.config.last_hour = 17
+  scheduler.attachEvent("onEventAdded", function (id, ev) {
+    var item = ev
+    item.id = id
+    item.start_date = ev.start_date.toLocaleString().slice(0, -3)
+    item.end_date = ev.end_date.toLocaleString().slice(0, -3)
+    console.log(item)
+    REST.TinyDB.insertItem("atamMeasScheduler", item, function (res) {
+      console.log(res)
+      REST.TinyDB.listItems("atamMeasScheduler", function (items) {
+        console.log(items)
+        scheduler.parse(items, "json")
+      })
+    })
+  })
+  scheduler.attachEvent("onEventChanged", function (id, ev) {
+    ev.start_date.setHours(ev.start_date.getHours() + 1)
+    ev.end_date.setHours(ev.end_date.getHours() + 1)
+    var item = ev
+    item.id = id
+    item.start_date = ev.start_date.toLocaleString().slice(0, -3)
+    item.end_date = ev.end_date.toLocaleString().slice(0, -3)
+    console.log(item)
+    REST.TinyDB.updateItem("atamMeasScheduler", item, function (res) {
+      console.log(res)
+      REST.TinyDB.listItems("atamMeasScheduler", function (items) {
+        console.log(items)
+        scheduler.parse(items, "json")
+      })
+    })
+  })
+
+  //---------------------------------------------------------------------------
   // atamHome
   //---------------------------------------------------------------------------
   $$("atamHome").attachEvent("onItemClick", function (id) {
@@ -551,7 +589,6 @@ setTimeout(function () {
 
   $$("atam").attachEvent("onViewChange", function (prev, next) {
     var view = atamViews.filter(function (item) { return item.id == next })[0]
-    // if (view.id.indexOf("Home") === -1) $$(view.id).setValue(view.id + "Home")
     $$("headerLabel2").setValue(view.value)
     $$("headerLabel2").show()
     $$("headerLabel2").define("width", view.labelWidth);
@@ -559,6 +596,23 @@ setTimeout(function () {
     $$("headerLabel3").hide()
     $$("headerLabel12").show()
     $$("headerLabel23").hide()
+    if (next == "atamMeasScheduler") {
+      $$("leftBlankSpace").hide()
+      $$("rightBlankSpace").hide()
+      $$("body").define("width", window.innerWidth)
+      $$("body").resize()
+      scheduler.init('atamMeasScheduler', new Date(), "month");
+      REST.TinyDB.listItems("atamMeasScheduler", function (items) {
+        console.log(items)
+        scheduler.parse(items, "json")
+      })
+    }
+    else {
+      $$("body").define("width", $$("body").$height / 2)
+      $$("body").resize()
+      $$("leftBlankSpace").show()
+      $$("rightBlankSpace").show()
+    }
   });
 
   // Manuel events

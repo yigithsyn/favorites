@@ -310,10 +310,10 @@ class TinyDB_Item(Resource):
     except Exception:
       return {"error": {"type": "api", "msg": "TinyDB_Item: GET\n" + str(traceback.format_exc())}}
 
-  def post(self, table, doc_id):
+  def put(self, table, doc_id):
     table = tinydbDatabase.table(table)
     try:
-      table.update(request.json(), doc_ids=[int(doc_id)])
+      table.update(request.json, doc_ids=[int(doc_id)])
       return {}
     except Exception:
       return {"error": {"type": "api", "msg": "TinyDB_Item: PUT\n" + str(traceback.format_exc())}}
