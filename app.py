@@ -7,6 +7,16 @@ import atexit
 import argparse
 from datetime import datetime
 
+# parse command-line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--tunnel", help="enable tunnelling to web", action="store_true")
+parser.add_argument("--node", help="run Node.js app", action="store_true")
+parser.add_argument(
+    "--jupyternb", help="embed Jupyter Notebook app", action="store_true")
+parser.add_argument("--matlab", help="connect to Matlab session", action="store_true")
+args = parser.parse_args()
+
 # Installed modules
 from flask import Flask, request, redirect, send_from_directory, send_file
 from flask_restful import Resource, Api, reqparse
@@ -14,7 +24,8 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from tinydb import TinyDB as tinydb
 import requests
-from notebook import notebookapp
+if args.jupyternb:
+  from notebook import notebookapp
 import wmi
 import psutil
 import visa
@@ -25,15 +36,6 @@ try:
 except:
   pass
 
-# parse command-line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--tunnel", help="enable tunnelling to web", action="store_true")
-parser.add_argument("--node", help="run Node.js app", action="store_true")
-parser.add_argument(
-    "--jupyternb", help="run Jupyter Notebook app", action="store_true")
-parser.add_argument("--matlab", help="run Matlab app", action="store_true")
-args = parser.parse_args()
 
 # create directory if does not exists
 def createDirectory(directory):
@@ -96,7 +98,6 @@ safeRequest = SafeRequests()
 # External Apps
 # =============================================================================
 # JupyterNB
-jupyternb = None
 if args.jupyternb:
   try:
     jupyternb = Popen(['jupyter', 'notebook', "--config",
@@ -132,26 +133,6 @@ if args.matlab:
   except Exception:
     print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
-# At exit cleaning
-def killProcess(proc_pid):
-  process = psutil.Process(proc_pid)
-  for proc in process.children(recursive=True):
-    proc.kill()
-  process.kill()
-
-def cleanup():
-  time.sleep(3)
-  if node != None:
-    killProcess(node.pid)
-    print('Node.js app stopped.')
-  if jupyternb != None:
-    killProcess(jupyternb.pid)
-    print('JupyterNB app stopped.')
-  if matlab != None:
-    matlab.quit()
-
-
-atexit.register(cleanup)
 
 # =============================================================================
 # VISA Library
