@@ -376,4 +376,4 @@ class Download(Resource):
 
 api.add_resource(Download, '/download/<directory>/<file>')
 
-app.run(host="0.0.0.0")
+app.run(host="0.0.0.0", debug=True)
