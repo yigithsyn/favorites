@@ -549,6 +549,13 @@ setTimeout(function () {
   scheduler.config.time_step = 60
   scheduler.config.first_hour = 9
   scheduler.config.last_hour = 17
+  scheduler.config.readonly = true
+  readWriteAllowedIPs = ["10.18.84.97","10.18.90.243","10.18.82.158"]
+  REST.Client.getClient(function(res){
+    if(readWriteAllowedIPs.indexOf(res.ip) > -1){
+      scheduler.config.readonly = false
+    }
+  })
   scheduler.templates.event_bar_text = function (start, end, event) {
     return "<b>Sistem: </b>" + event.system + "<br>" +
       "<b>Müşteri / Proje: </b>" + event.customer + "<br>" +
@@ -676,7 +683,6 @@ setTimeout(function () {
       REST.TinyDB.listItems("atamMeasScheduler", function (items) {
         console.log(items)
         scheduler.parse(items, "json")
-       
       })
     }
     else {

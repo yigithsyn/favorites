@@ -21,6 +21,18 @@ var REST = {
     // })
     callback("")
   },
+  Client: {
+    getClient: function (callback = function () { }) {
+      webix.ajax().get(REST.url + "/client", {
+        error: function (t, d, x) {
+          callback({ error: { type: "server", msg: d.json() } })
+        },
+        success: function (t, d, x) {
+          callback(d.json())
+        }
+      })
+    }
+  },
   TinyDB: {
     listTables: function (callback = function () { }) {
       webix.ajax().get(REST.url + "/tinydb", {

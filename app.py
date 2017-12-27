@@ -366,6 +366,18 @@ class Upload(Resource):
 
 api.add_resource(Upload, '/upload/<directory>')
 
+
+# =============================================================================
+# Client
+# =============================================================================
+
+class Client(Resource):
+  def get(self):
+    return {"ip": request.environ.get("HTTP_X_REAL_IP",request.remote_addr)}
+
+
+api.add_resource(Client, '/client')
+
 # =============================================================================
 # File Download
 # =============================================================================
