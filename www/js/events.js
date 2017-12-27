@@ -545,40 +545,111 @@ setTimeout(function () {
   //---------------------------------------------------------------------------
   // atamMeasScheduler
   //---------------------------------------------------------------------------
-  scheduler.config.xml_date = "%d.%m.%Y %H:%i";
+  scheduler.config.xml_date = "%j.%n.%Y %G:%i";
   scheduler.config.time_step = 60
   scheduler.config.first_hour = 9
   scheduler.config.last_hour = 17
+  scheduler.templates.event_bar_text = function (start, end, event) {
+    return "<b>Sistem: </b>" + event.system + "<br>" +
+      "<b>Müşteri / Proje: </b>" + event.customer + "<br>" +
+      "<b>S. Sorumlusu: </b>" + event.responsible + "<br>" +
+      "<b>Ö. Sorumlusu: </b>" + event.user + "<br>" +
+      "<b>Açıklama: </b>" + event.text
+  }
+  scheduler.templates.event_text = function (start, end, event) {
+    return "<b>Sistem: </b>" + event.system + "<br>" +
+      "<b>Müşteri / Proje: </b>" + event.customer + "<br>" +
+      "<b>S. Sorumlusu: </b>" + event.responsible + "<br>" +
+      "<b>Ö. Sorumlusu: </b>" + event.user
+  }
+  scheduler.config.lightbox.sections[5] = scheduler.config.lightbox.sections[1]
+  scheduler.config.lightbox.sections[4] = scheduler.config.lightbox.sections[0]
+  scheduler.config.lightbox.sections[0] = {
+    name: "Sistem", height: 34, type: "select", map_to: "system", options: [
+      { key: "KYAS", label: "KYAS - Küresel Yakın Alan Ölçüm Sistemi" },
+      { key: "DAMAS", label: "DAMAS - Dikey Alt Milimetrik Band Yakın Alan Ölçüm Sistemi" },
+      { key: "YAMAS", label: "YAMAS - Yatay Milimetrik Band Yakın Alan Ölçüm Sistemi" },
+    ]
+  }
+  scheduler.config.lightbox.sections[1] = { name: "Müşteri / Proje", height: 34, type: "textarea", map_to: "customer" }
+  scheduler.config.lightbox.sections[2] = {
+    name: "Sistem Sorumlusu", height: 34, type: "select", map_to: "responsible", options: [
+      { key: "Fatma", label: "Fatma ZENGİN" },
+      { key: "Göksenin", label: "Göksenin BOZDAĞ" },
+    ]
+  }
+  scheduler.config.lightbox.sections[3] = {
+    name: "Ölçüm Sorumlusu", height: 34, type: "select", map_to: "user", options: [
+      { key: "Eren", label: "Eren AKKAYA" },
+      { key: "Fatma", label: "Fatma ZENGİN" },
+      { key: "Göksenin", label: "Göksenin BOZDAĞ" },
+      { key: "Hüseyin", label: "Hüseyin YİĞİT" },
+      { key: "Koray", label: "Koray SÜRMELİ" },
+      { key: "Nazlı", label: "Nazlı CANDAN" },
+      { key: "Okan", label: "Okan Mert YÜCEDAĞ" },
+      { key: "Onur", label: "Onur ARI" },
+      { key: "Ömer", label: "Ömer YILMAZ" },
+      { key: "Özge", label: "Özge" },
+      { key: "Sultan", label: "Sultan ÇALIŞKAN" },
+      { key: "Türker", label: "Türker İSENLİK" },
+    ]
+  }
   scheduler.attachEvent("onEventAdded", function (id, ev) {
-    var item = ev
-    item.id = id
-    item.start_date = ev.start_date.toLocaleString().slice(0, -3)
-    item.end_date = ev.end_date.toLocaleString().slice(0, -3)
+    console.log(ev)
+    var item = { text: ev.text, system: ev.system, customer: ev.customer, responsible: ev.responsible, user: ev.user }
+    item.start_date = String(ev.start_date.getDate()) + "." + String(ev.start_date.getMonth() + 1) + "." + String(ev.start_date.getFullYear()) + " "
+    item.start_date += String(ev.start_date.getHours()) + ":" + (ev.start_date.getMinutes() < 10 ? "0" + String(ev.start_date.getMinutes()) : String(ev.start_date.getMinutes()))
+    item.end_date = String(ev.end_date.getDate()) + "." + String(ev.end_date.getMonth() + 1) + "." + String(ev.end_date.getFullYear()) + " "
+    item.end_date += String(ev.end_date.getHours()) + ":" + (ev.end_date.getMinutes() < 10 ? "0" + String(ev.end_date.getMinutes()) : String(ev.end_date.getMinutes()))
+    // console.log(ev.start_date)
+    // var item = ev
+    // item.id = id
+    // item.start_date = ev.start_date.toString().slice(0, -3)
+    // item.end_date = ev.end_date.toString().slice(0, -3)
     console.log(item)
     REST.TinyDB.insertItem("atamMeasScheduler", item, function (res) {
       console.log(res)
       REST.TinyDB.listItems("atamMeasScheduler", function (items) {
         console.log(items)
+        scheduler.clearAll()
         scheduler.parse(items, "json")
+        var eventsSingleDay = document.getElementsByClassName("dhx_cal_event_clear dhx_cal_event_line_start dhx_cal_event_line_end")
+       
       })
     })
   })
   scheduler.attachEvent("onEventChanged", function (id, ev) {
-    ev.start_date.setHours(ev.start_date.getHours() + 1)
-    ev.end_date.setHours(ev.end_date.getHours() + 1)
-    var item = ev
-    item.id = id
-    item.start_date = ev.start_date.toLocaleString().slice(0, -3)
-    item.end_date = ev.end_date.toLocaleString().slice(0, -3)
-    console.log(item)
+    // console.log(ev)
+    var item = { id: ev.id, text: ev.text, system: ev.system, customer: ev.customer, responsible: ev.responsible, user: ev.user }
+    item.start_date = String(ev.start_date.getDate()) + "." + String(ev.start_date.getMonth() + 1) + "." + String(ev.start_date.getFullYear()) + " "
+    item.start_date += String(ev.start_date.getHours()) + ":" + (ev.start_date.getMinutes() < 10 ? "0" + String(ev.start_date.getMinutes()) : String(ev.start_date.getMinutes()))
+    item.end_date = String(ev.end_date.getDate()) + "." + String(ev.end_date.getMonth() + 1) + "." + String(ev.end_date.getFullYear()) + " "
+    item.end_date += String(ev.end_date.getHours()) + ":" + (ev.end_date.getMinutes() < 10 ? "0" + String(ev.end_date.getMinutes()) : String(ev.end_date.getMinutes()))
+    // console.log(item)
     REST.TinyDB.updateItem("atamMeasScheduler", item, function (res) {
       console.log(res)
       REST.TinyDB.listItems("atamMeasScheduler", function (items) {
         console.log(items)
+        scheduler.clearAll()
         scheduler.parse(items, "json")
+        var eventsSingleDay = document.getElementsByClassName("dhx_cal_event_clear dhx_cal_event_line_start dhx_cal_event_line_end")
+       
       })
     })
   })
+  scheduler.attachEvent("onConfirmedBeforeEventDelete", function (id, ev) {
+    console.log(ev)
+    REST.TinyDB.deleteItem("atamMeasScheduler", ev, function (res) {
+      console.log(res)
+      REST.TinyDB.listItems("atamMeasScheduler", function (items) {
+        console.log(items)
+        scheduler.clearAll()
+        scheduler.parse(items, "json")
+       
+      })
+    })
+  })
+  
 
   //---------------------------------------------------------------------------
   // atamHome
@@ -605,6 +676,7 @@ setTimeout(function () {
       REST.TinyDB.listItems("atamMeasScheduler", function (items) {
         console.log(items)
         scheduler.parse(items, "json")
+       
       })
     }
     else {

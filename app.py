@@ -157,49 +157,49 @@ atexit.register(cleanup)
 # VISA Library
 # =============================================================================
 try:
-    rm = visa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
+  rm = visa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
 except visa.LibraryError:
-    print("Visa: Library error: Not found.")
+  print("Visa: Library error: Not found.")
 
 instruments = {}
 class VISA(Resource):
-    def post(self, instr):
-        try:
-            instruments[instr] = rm.get_instrument(instr)
-            instruments[instr].timeout = 5000
-            return {"success": "VISA Library: Connected to instrument.", "instr": instruments[instr].query("*IDN?").replace("\n", " ")}
-        except:
-            return {"error": "Error: VISA Library: Could not be connected to instrument!"}
+  def post(self, instr):
+    try:
+      instruments[instr] = rm.get_instrument(instr)
+      instruments[instr].timeout = 5000
+      return {"success": "VISA Library: Connected to instrument.", "instr": instruments[instr].query("*IDN?").replace("\n", " ")}
+    except:
+      return {"error": "Error: VISA Library: Could not be connected to instrument!"}
 
-    def put(self, instr):
-        try:
-            parser.add_argument('buff')
-            args = parser.parse_args()
-            instruments[instr].write(args["buff"])
-            return {
-                "success": "VISA Library: Buffer is written to instrument.", "buff": args["buff"]
-            }
-        except:
-            return {"error": "Error: VISA Library: Buffer could not be written to instrument."}
+  def put(self, instr):
+    try:
+      parser.add_argument('buff')
+      args = parser.parse_args()
+      instruments[instr].write(args["buff"])
+      return {
+          "success": "VISA Library: Buffer is written to instrument.", "buff": args["buff"]
+      }
+    except:
+      return {"error": "Error: VISA Library: Buffer could not be written to instrument."}
 
-    def get(self, instr):
-        try:
-            parser.add_argument('query')
-            args = parser.parse_args()
-            res = instruments[instr].query(args["query"])
-            return {
-                "success": "VISA Library: Query fetched from instrument.", "query": args["query"], "res": res.replace("\n", "").replace("\"", "").split(",")
-            }
-        except:
-            return {"error": "Error: VISA Library: Query could not be fetched from instrument."}
+  def get(self, instr):
+    try:
+      parser.add_argument('query')
+      args = parser.parse_args()
+      res = instruments[instr].query(args["query"])
+      return {
+          "success": "VISA Library: Query fetched from instrument.", "query": args["query"], "res": res.replace("\n", "").replace("\"", "").split(",")
+      }
+    except:
+      return {"error": "Error: VISA Library: Query could not be fetched from instrument."}
 
-    def delete(self, instr):
-        try:
-            instruments[instr].close()
-            del instruments[instr]
-            return {"success": "VISA Library: Connection closed to instrument."}
-        except:
-            return {"error": "Error: VISA Library: Connection to instrument can not be closed!"}
+  def delete(self, instr):
+    try:
+      instruments[instr].close()
+      del instruments[instr]
+      return {"success": "VISA Library: Connection closed to instrument."}
+    except:
+      return {"error": "Error: VISA Library: Connection to instrument can not be closed!"}
 
 
 api.add_resource(VISA, '/visa/<instr>')

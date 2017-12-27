@@ -24,11 +24,11 @@ content-type: application/json
     "addr": 8888
 }
 ##################
-GET http://127.0.0.1:5000/tinydb/ngrok/1
+GET http://127.0.0.1:5000/tinydb/ngrok/2
 
 
 ##################
-DELETE http://127.0.0.1:5000/tinydb/inventory/4
+DELETE http://127.0.0.1:5000/tinydb/atamMeasScheduler/9
 
 ####################################
 # Ngrok

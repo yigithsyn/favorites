@@ -52,6 +52,11 @@ var REST = {
         callback(d.json())
       })
     },
+    deleteItem: function (table, item, callback = function () { }) {
+      webix.ajax().headers({ "Content-type": "application/json" }).del(REST.url + "/tinydb/" + table + "/" + item.id, {}, function (t, d, x) {
+        callback(d.json())
+      })
+    },
   },
   mLab: {
     apiKey: "Do4rql-3HdmtYmJE5oz9rHVILV5Mos9d",
