@@ -569,6 +569,13 @@ setTimeout(function () {
       "<b>S. Sorumlusu: </b>" + event.responsible + "<br>" +
       "<b>Ö. Sorumlusu: </b>" + event.user
   }
+  scheduler.templates.event_class = function (start, end, event) {
+    var css = ""
+    if(event.system){
+      css += "event_" + event.system
+    }
+    return css
+  }
   scheduler.config.lightbox.sections[5] = scheduler.config.lightbox.sections[1]
   scheduler.config.lightbox.sections[4] = scheduler.config.lightbox.sections[0]
   scheduler.config.lightbox.sections[0] = {
