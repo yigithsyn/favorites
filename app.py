@@ -2,8 +2,6 @@
 import os
 import traceback
 import time
-from subprocess import Popen
-import atexit
 import argparse
 from datetime import datetime
 
@@ -14,7 +12,10 @@ parser.add_argument(
 parser.add_argument("--node", help="run Node.js app", action="store_true")
 parser.add_argument(
     "--jupyternb", help="embed Jupyter Notebook app", action="store_true")
-parser.add_argument("--matlab", help="connect to Matlab session", action="store_true")
+parser.add_argument(
+    "--matlab", help="connect to Matlab session", action="store_true")
+parser.add_argument(
+    "--visa", help="load VISA library to connect a device", action="store_true")
 args = parser.parse_args()
 
 # Installed modules
@@ -23,12 +24,10 @@ from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 from tinydb import TinyDB as tinydb
-import requests
 if args.jupyternb:
   from notebook import notebookapp
-import wmi
-import psutil
-import visa
+if args.visa:
+  import visa
 
 # locally installed modules
 if args.matlab:
@@ -58,9 +57,6 @@ CORS(app)
 api = Api(app)
 parser = reqparse.RequestParser()
 
-# process manager
-processManager = wmi.WMI()
-
 # serve index.html
 @app.route('/<path:path>')
 def static_proxy(path):
@@ -69,35 +65,13 @@ def static_proxy(path):
 # =============================================================================
 # Tools
 # =============================================================================
-class SafeRequests:
-  def get(self, url, params=None, timeout=10):
-    status_code = 0
-    start = datetime.now()
-    now = datetime.now()
-    while status_code != 200 and (now - start).seconds <= timeout:
-      try:
-        response = requests.get(url, params)
-        status_code = response.status_code
-        time.sleep(1)
-      except Exception:
-        print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
-      now = datetime.now()
-    if status_code != 200:
-      print({"error": {"type": "api", "msg": "Timeout reached in request"}})
-      return False, None
-    else:
-      return True, response
 
-
-safeRequest = SafeRequests()
 
 # =============================================================================
 # VISA Library
 # =============================================================================
-try:
+if args.visa:
   rm = visa.ResourceManager("C:\\Windows\\System32\\visa64.dll")
-except visa.LibraryError:
-  print("Visa: Library error: Not found.")
 
 instruments = {}
 class VISA(Resource):
@@ -309,7 +283,7 @@ api.add_resource(Upload, '/upload/<directory>')
 # =============================================================================
 class Client(Resource):
   def get(self):
-    return {"ip": request.environ.get("HTTP_X_REAL_IP",request.remote_addr)}
+    return {"ip": request.environ.get("HTTP_X_REAL_IP", request.remote_addr)}
 
 
 api.add_resource(Client, '/client')
@@ -320,6 +294,7 @@ api.add_resource(Client, '/client')
 class Download(Resource):
   def get(self, directory, file):
     return send_file("data/" + directory + "/" + file)
+
 
 api.add_resource(Download, '/download/<directory>/<file>')
 
