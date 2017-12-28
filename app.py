@@ -97,17 +97,6 @@ safeRequest = SafeRequests()
 # =============================================================================
 # External Apps
 # =============================================================================
-# JupyterNB
-if args.jupyternb:
-  try:
-    jupyternb = Popen(['jupyter', 'notebook', "--config",
-                       "jupyter_notebook_config.py"], shell=True)
-    while len(list(notebookapp.list_running_servers())) == 0:
-      time.sleep(1)
-    jupyternb_server = list(notebookapp.list_running_servers())[0]
-    print("JupyterNB app started.")
-  except Exception:
-    print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
 
 # NodeJS
 node = None

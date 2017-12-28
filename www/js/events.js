@@ -550,7 +550,7 @@ setTimeout(function () {
   scheduler.config.first_hour = 9
   scheduler.config.last_hour = 17
   scheduler.config.readonly = true
-  readWriteAllowedIPs = ["10.18.84.97","10.18.90.243","10.18.82.158"]
+  readWriteAllowedIPs = ["127.0.0.1","10.18.84.97","10.18.90.243","10.18.82.158"]
   REST.Client.getClient(function(res){
     if(readWriteAllowedIPs.indexOf(res.ip) > -1){
       scheduler.config.readonly = false
@@ -580,9 +580,9 @@ setTimeout(function () {
   scheduler.config.lightbox.sections[4] = scheduler.config.lightbox.sections[0]
   scheduler.config.lightbox.sections[0] = {
     name: "Sistem", height: 34, type: "select", map_to: "system", options: [
-      { key: "KYAS", label: "KYAS - Küresel Yakın Alan Ölçüm Sistemi" },
-      { key: "DAMAS", label: "DAMAS - Dikey Alt Milimetrik Band Yakın Alan Ölçüm Sistemi" },
-      { key: "YAMAS", label: "YAMAS - Yatay Milimetrik Band Yakın Alan Ölçüm Sistemi" },
+      { key: "Küresel", label: "Küresel - Küresel Yakın Alan Ölçüm Sistemi" },
+      { key: "Dikey", label: "Dikey - Alt Milimetrik Band Dikey Yakın Alan Ölçüm Sistemi" },
+      { key: "Yatay", label: "Yatay - Milimetrik Band Yatay Yakın Alan Ölçüm Sistemi" },
     ]
   }
   scheduler.config.lightbox.sections[1] = { name: "Müşteri / Proje", height: 34, type: "textarea", map_to: "customer" }
