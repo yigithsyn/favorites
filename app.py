@@ -31,11 +31,8 @@ import psutil
 import visa
 
 # locally installed modules
-try:
+if args.matlab:
   import matlab.engine as matlabEngine
-except:
-  pass
-
 
 # create directory if does not exists
 def createDirectory(directory):
@@ -93,35 +90,6 @@ class SafeRequests:
 
 
 safeRequest = SafeRequests()
-
-# =============================================================================
-# External Apps
-# =============================================================================
-
-# NodeJS
-node = None
-if args.node:
-  try:
-    node = Popen(['node', 'app.js'], shell=True)
-  except Exception:
-    print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
-  if not safeRequest.get("http://127.0.0.1:3000", params=None)[0]:
-    print({"error": {"type": "api", "msg": "NodeJS app could not be satarted."}})
-    exit()
-  print("Node.js app started.")
-
-# MATLAB
-matlab = None
-if args.matlab:
-  try:
-    matlab = matlabEngine.start_matlab("-desktop")
-    matlab.matlab.engine.shareEngine(nargout=0)
-    while len(list(matlabEngine.find_matlab())) == 0:
-      time.sleep(1)
-    print("Matlab app started.")
-  except Exception:
-    print({"error": {"type": "api", "msg": str(traceback.format_exc())}})
-
 
 # =============================================================================
 # VISA Library
@@ -336,11 +304,9 @@ class Upload(Resource):
 
 api.add_resource(Upload, '/upload/<directory>')
 
-
 # =============================================================================
 # Client
 # =============================================================================
-
 class Client(Resource):
   def get(self):
     return {"ip": request.environ.get("HTTP_X_REAL_IP",request.remote_addr)}
@@ -354,7 +320,6 @@ api.add_resource(Client, '/client')
 class Download(Resource):
   def get(self, directory, file):
     return send_file("data/" + directory + "/" + file)
-
 
 api.add_resource(Download, '/download/<directory>/<file>')
 
