@@ -119,14 +119,17 @@ api.add_resource(VISA, '/visa/<instr>')
 # =============================================================================
 # OPC
 # =============================================================================
+matlab = None
 opcServers = {}
 
 class OPC(Resource):
   def get(self):
+    matlab = matlabEngine.connect_matlab(matlabEngine.find_matlab()[0])
     return matlab.opcserverinfo('localhost', nargout=1)["ServerID"]
 
 class OPCServer(Resource):
   def post(self, server):
+    matlab = matlabEngine.connect_matlab(matlabEngine.find_matlab()[0])
     opcClient = "opcClient" + server.replace(".", "")
     opcItemGroup = "opcItemGroup" + server.replace(".", "")
     matlab.eval(opcClient + " = opcda('localhost','" + server + "')", nargout=0)
