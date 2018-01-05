@@ -12,5 +12,6 @@
 }
 .webix_winmenu{
 	position:relative;
-	background: transparent;
+  background: transparent;
+  display:none;
 }
