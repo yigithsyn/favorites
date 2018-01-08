@@ -359,6 +359,16 @@ var atamViews = [
 ]
 
 //=============================================================================
+// rfprop
+//=============================================================================
+//-----------------------------------------------------------------------------
+// rfpropHome
+//-----------------------------------------------------------------------------
+var rfpropViews = [
+  { id: "rfpropHome", value: "", labelWidth: 0, view: "template", borderless: true, template:"Deneme" },
+]
+
+//=============================================================================
 // home
 //=============================================================================
 var winmenuData = [
@@ -367,6 +377,7 @@ var winmenuData = [
   { id: "jupyternb", value: "JupyterNB", img: "img/jupyternb_white_100x100.png", color: "#603cbb", x: 1, y: 2, width: 1 },
   { id: "kodyap", value: "KODYAP", img: "img/kodyap_100x100.png", color: "#00a300", x: 2, y: 2, width: 1 },
   { id: "atam", value: "ATAM", img: "img/atam_100x100.png", color: "#00a300", x: 1, y: 3, width: 1 },
+  { id: "rfprop", value: "RF Propagation", img: "img/rf_propagation_100x100.png", color: "#bb3c58", x: 2, y: 3, width: 1 },
   // { value: "Finance", img: "icons/03.png", color: "#008ba0", x: 1, y: 1, width: 2 },
   // { value: "Settings", img: "icons/06.png", color: "#603cbb", x: 1, y: 2, width: 2 },
   // { value: "People", img: "icons/34.png", color: "#d9532c", x: 1, y: 3, width: 2 },
@@ -385,5 +396,6 @@ var views = [
   { id: "jupyternb", value: "JupyterNB", labelWidth: 90, view: "iframe", src: "" },
   { id: "kodyap", value: "KODYAP", labelWidth: 76, cells: kodyapViews, keepViews: true },
   { id: "atam", value: "ATAM", labelWidth: 56, cells: atamViews, keepViews: true },
+  { id: "rfprop", value: "RF Propagation", labelWidth: 131, cells: rfpropViews, keepViews: true },
 ]
 
