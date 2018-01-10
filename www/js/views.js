@@ -314,20 +314,241 @@ var kodyapVerticalViews = [
   { id: "kodyapVerticalMeasurementRun", value: "Ölçülüyor...", labelWidth: 100, rows: kodyapVerticalMeasurementRunRows, margin: 15 },
 ]
 
+//.............................................................................
+// kodyapHorizontalMeasurement
+//.............................................................................
+var kodyapHorizontalMeasurementScanArea = {
+  view: "fieldset",
+  label: "Tarama Alanı",
+  body: {
+    rows: [
+      {
+        cols: [
+          {
+            cols: [
+              { id: "kodyapHorizontalMeasurementScanAreaX0", view: "text", label: "x0: ", value: kodyapHorizontalScanner.x0, labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+          {
+            cols: [
+              { id: "kodyapHorizontalMeasurementScanAreaY0", view: "text", label: "y0: ", value: kodyapHorizontalScanner.y0, labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          }
+        ],
+        margin: 15
+      },
+      {
+        cols: [
+          {
+            cols: [
+              { id: "kodyapHorizontalMeasurementScanAreaLx", view: "text", label: "Lx:", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+          {
+            cols: [
+              { id: "kodyapHorizontalMeasurementScanAreaLy", view: "text", label: "Ly:", labelWidth: 35 },
+              { view: "label", label: "mm", width: 50, align: "left" },
+            ],
+            gravity: 1,
+          },
+        ],
+        margin: 15
+      },
+      { id: "kodyapHorizontalMeasurementScanAreaSquareScan", view: "checkbox", label: "Kare Tarama:", labelWidth: 100 }
+    ]
+  },
+}
+
+var kodyapHorizontalMeasurementFrequency = {
+  view: "fieldset",
+  label: "Frekans",
+  body: {
+    rows: [
+      {
+        cols: [
+          { id: "kodyapHorizontalMeasurementFrequencyFreq", view: "text", label: "Frekans: ", labelWidth: 100 },
+          { view: "label", label: "GHz", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapHorizontalMeasurementFrequencyWavelen", view: "text", label: "Dalga Boyu: ", labelWidth: 100 },
+          { view: "label", label: "mm", align: "left", width: 50 },
+        ]
+      },
+    ]
+  },
+}
+
+kodyapHorizontalMeasurementSampling = {
+  view: "fieldset",
+  label: "Örnekleme",
+  body: {
+    rows: [
+      {
+        cols: [
+          { id: "kodyapHorizontalMeasurementSamplingD", view: "text", label: "Sıklığı:", labelWidth: 100, readonly: true },
+          { view: "label", label: "mm", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapHorizontalMeasurementSamplingNx", view: "text", label: "Sayısı (X):", labelWidth: 100, readonly: true },
+          { view: "label", label: "", align: "left", width: 50 },
+        ]
+      },
+      {
+        cols: [
+          { id: "kodyapHorizontalMeasurementSamplingNy", view: "text", label: "Sayısı (Y):", labelWidth: 100, readonly: true },
+          { view: "label", label: "", align: "left", width: 50 },
+        ]
+      },
+    ]
+  },
+}
+
+kodyapHorizontalMeasurementLogging = {
+  view: "fieldset",
+  label: "Kayıt",
+  body: {
+    rows: [
+      { id: "kodyapHorizontalMeasurementLoggingName", view: "text", labelWidth: 100, label: "Ölçüm adı:", value: "Deneme" },
+    ]
+  },
+}
+
+var kodyapHorizontalMeasurementRows = [
+  kodyapHorizontalMeasurementScanArea,
+  kodyapHorizontalMeasurementFrequency,
+  kodyapHorizontalMeasurementSampling,
+  kodyapHorizontalMeasurementLogging,
+  { id: "kodyapHorizontalMeasurementStart", view: "button", label: "Başlat" },
+  {}
+]
+
+//.............................................................................
+// kodyapHorizontalMovement
+//.............................................................................
+var kodyapHorizontalMovementAxisX = {
+  id: "kodyapHorizontalMovementX",
+  value: "X",
+  rows: [
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementXPos", view: "text", label: "Anlık Konum", labelWidth: 140, readonly: true },
+        { view: "label", label: "mm", width: 60, align: "left" },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementXSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
+        { view: "label", label: "rpm", align: "left", width: 60 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementXMoveHome", view: "button", label: "Sıfırla", gravity: 1 },
+        { id: "kodyapHorizontalMovementXMoveCenter", view: "button", label: "Ortala", gravity: 1 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementXMoveAbsVal", view: "text", label: "Git (Mutlak)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapHorizontalMovementXMoveAbs", view: "button", label: "Git", width: 100 }
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementXMoveRelVal", view: "text", label: "Git (Göreceli)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapHorizontalMovementXMoveRel", view: "button", label: "Git", width: 100 },
+      ]
+    },
+  ]
+}
+
+var kodyapHorizontalMovementAxisY = {
+  id: "kodyapHorizontalMovementY",
+  value: "Y",
+  rows: [
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementYPos", view: "text", label: "Anlık Konum", labelWidth: 140, readonly: true },
+        { view: "label", label: "mm", width: 60, align: "left" },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementYSpeed", view: "text", label: "Konumlama Hızı", labelWidth: 140 },
+        { view: "label", label: "rpm", align: "left", width: 60 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementYMoveHome", view: "button", label: "Sıfırla", gravity: 1 },
+        { id: "kodyapHorizontalMovementYMoveCenter", view: "button", label: "Ortala", gravity: 1 },
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementYMoveAbsVal", view: "text", label: "Git (Mutlak)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapHorizontalMovementYMoveAbs", view: "button", label: "Git", width: 100 }
+      ]
+    },
+    {
+      cols: [
+        { id: "kodyapHorizontalMovementYMoveRelVal", view: "text", label: "Git (Göreceli)", labelWidth: 120 },
+        { view: "label", label: "mm", width: 50, align: "left" },
+        { id: "kodyapHorizontalMovementYMoveRel", view: "button", label: "Git", width: 100 },
+      ]
+    },
+  ]
+}
+
+var kodyapHorizontalMovementAxisViews = [
+  kodyapHorizontalMovementAxisX,
+  kodyapHorizontalMovementAxisY
+]
+
+var kodyapHorizontalMovementRows = [
+  { template: "camera" },
+  { id: "kodyapHorizontalMovementAxis", borderless: true, view: "tabbar", multiview: true, options: kodyapHorizontalMovementAxisViews },
+  { cells: kodyapHorizontalMovementAxisViews, keepViews: true }
+]
+
+//.............................................................................
+// kodyapHorizontalHome
+//.............................................................................
+var kodyapHorizontalCols = [
+  { id: "kodyapHorizontalMovement", rows: kodyapHorizontalMovementRows, value: "Hareket" },
+  { id: "kodyapHorizontalMeasurement", rows: kodyapHorizontalMeasurementRows, value: "Ölçüm" },
+  { id: "kodyapHorizontalMeasurementRun", view: "template", template: "3", value: "Ölçüm Alınıyor..." },
+];
+
+var kodyapHorizontalViews = [
+  { id: "kodyapHorizontalHome", value: "", labelWidth: 0, view: "layout", cols: kodyapHorizontalCols, margin:25 },
+]
+
 //-----------------------------------------------------------------------------
 // kodyapHome
 //-----------------------------------------------------------------------------
 var kodyapMenuData = [
   { id: "kodyapVertical", value: "Dikey Sistem", img: "img/fa-arrows-v-100x100.png", color: "#603cbb", x: 1, y: 1 },
   { id: "kodyapHorizontal", value: "Yatay Sistem", img: "img/fa-arrows-h-100x100.png", color: "#603cbb", x: 2, y: 1 },
-  { id: "kodyapArchieve", value: "Ölçüm Arşivi", img: "img/fa-search-100x100.png", color: "#603cbb", x: 1, y: 2 },
 ];
 
 var kodyapViews = [
   { id: "kodyapHome", value: "", labelWidth: 0, view: "winmenu", borderless: true, data: kodyapMenuData, xCount: 2, yCount: 4 },
   { id: "kodyapVertical", value: "Dikey", labelWidth: 53, cells: kodyapVerticalViews, keepViews: true },
-  { id: "kodyapHorizontal", value: "Yatay", labelWidth: 53, template: "Yatay" },
-  { id: "kodyapArchieve", value: "Ölçümler", labelWidth: 60, template: "Ölçümler" }
+  { id: "kodyapHorizontal", value: "Yatay", labelWidth: 63, cells: kodyapHorizontalViews, keepViews: true },
 ]
 
 //=============================================================================
@@ -365,7 +586,7 @@ var atamViews = [
 // rfpropHome
 //-----------------------------------------------------------------------------
 var rfpropViews = [
-  { id: "rfpropHome", value: "", labelWidth: 0, view: "template", borderless: true, template:"Deneme" },
+  { id: "rfpropHome", value: "", labelWidth: 0, view: "template", borderless: true, template: "Deneme" },
 ]
 
 //=============================================================================
