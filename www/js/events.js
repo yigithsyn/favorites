@@ -551,11 +551,7 @@ setTimeout(function () {
   scheduler.config.last_hour = 17
   scheduler.config.readonly = true
   readWriteAllowedIPs = ["10.18.90.243","10.18.82.158"]
-  REST.Client.getClient(function(res){
-    if(readWriteAllowedIPs.indexOf(res.ip) > -1){
-      scheduler.config.readonly = false
-    }
-  })
+ 
   scheduler.templates.event_bar_text = function (start, end, event) {
     return "<b>Sistem: </b>" + event.system + "<br>" +
       "<b>Müşteri / Proje: </b>" + event.customer + "<br>" +
@@ -691,6 +687,11 @@ setTimeout(function () {
         console.log(items)
         scheduler.parse(items, "json")
       })
+      REST.Client.getClient(function(res){
+        if(readWriteAllowedIPs.indexOf(res.ip) > -1){
+          scheduler.config.readonly = false
+        }
+      })
     }
     else {
       $$("body").define("width", $$("body").$height / 2)
@@ -731,5 +732,7 @@ setTimeout(function () {
   //     }
   //   })
   // })
+
+
 
 }, 1000)
