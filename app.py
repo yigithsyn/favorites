@@ -133,6 +133,7 @@ class OPC(Resource):
 
 class OPCServer(Resource):
   def post(self, server):
+    global matlab
     matlab = matlabEngine.connect_matlab(matlabEngine.find_matlab()[0])
     opcClient = "opcClient" + server.replace(".", "")
     opcItemGroup = "opcItemGroup" + server.replace(".", "")
