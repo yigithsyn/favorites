@@ -701,35 +701,35 @@ setTimeout(function () {
   });
 
   // Manuel events
-  REST.registerURL(function (res) {
-    REST.TinyDB.listItems("jupyternb", function (res) {
-      if (!res.error) {
-        //REST.jupyternb_url += "?token=" + res[0].token
-        $$("jupyternb").load(REST.jupyternb_url)
-      }
-      else console.log(res)
-    })
-    REST.TinyDB.listTables(function (tables) {
-      var data = []
-      async.eachSeries(tables,
-        function (table, callback) {
-          data.push({ value: table, data: [] })
-          callback()
-        },
-        function (err) {
-          $$("databaseTree").unselectAll()
-          $$("databaseTree").clearAll()
-          $$("databaseTree").parse(data)
-          $$("databaseTree").openAll()
-        })
-    })
-    REST.TinyDB.listItems("inventory", function (res) {
-      if (!res.error) {
-        $$("inventoryList").unselectAll()
-        $$("inventoryList").clearAll()
-        $$("inventoryList").parse(res)
-      }
-    })
-  })
+  // REST.registerURL(function (res) {
+  //   REST.TinyDB.listItems("jupyternb", function (res) {
+  //     if (!res.error) {
+  //       //REST.jupyternb_url += "?token=" + res[0].token
+  //       $$("jupyternb").load(REST.jupyternb_url)
+  //     }
+  //     else console.log(res)
+  //   })
+  //   REST.TinyDB.listTables(function (tables) {
+  //     var data = []
+  //     async.eachSeries(tables,
+  //       function (table, callback) {
+  //         data.push({ value: table, data: [] })
+  //         callback()
+  //       },
+  //       function (err) {
+  //         $$("databaseTree").unselectAll()
+  //         $$("databaseTree").clearAll()
+  //         $$("databaseTree").parse(data)
+  //         $$("databaseTree").openAll()
+  //       })
+  //   })
+  //   REST.TinyDB.listItems("inventory", function (res) {
+  //     if (!res.error) {
+  //       $$("inventoryList").unselectAll()
+  //       $$("inventoryList").clearAll()
+  //       $$("inventoryList").parse(res)
+  //     }
+  //   })
+  // })
 
 }, 1000)
