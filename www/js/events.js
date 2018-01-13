@@ -550,8 +550,8 @@ setTimeout(function () {
   scheduler.config.first_hour = 9
   scheduler.config.last_hour = 17
   scheduler.config.readonly = true
-  readWriteAllowedIPs = ["10.18.90.243","10.18.82.158"]
- 
+  readWriteAllowedIPs = ["10.18.90.243", "10.18.82.158"]
+
   scheduler.templates.event_bar_text = function (start, end, event) {
     return "<b>Sistem: </b>" + event.system + "<br>" +
       "<b>Müşteri / Proje: </b>" + event.customer + "<br>" +
@@ -567,7 +567,7 @@ setTimeout(function () {
   }
   scheduler.templates.event_class = function (start, end, event) {
     var css = ""
-    if(event.system){
+    if (event.system) {
       css += "event_" + event.system
     }
     return css
@@ -624,7 +624,7 @@ setTimeout(function () {
         scheduler.clearAll()
         scheduler.parse(items, "json")
         var eventsSingleDay = document.getElementsByClassName("dhx_cal_event_clear dhx_cal_event_line_start dhx_cal_event_line_end")
-       
+
       })
     })
   })
@@ -643,7 +643,7 @@ setTimeout(function () {
         scheduler.clearAll()
         scheduler.parse(items, "json")
         var eventsSingleDay = document.getElementsByClassName("dhx_cal_event_clear dhx_cal_event_line_start dhx_cal_event_line_end")
-       
+
       })
     })
   })
@@ -655,11 +655,11 @@ setTimeout(function () {
         console.log(items)
         scheduler.clearAll()
         scheduler.parse(items, "json")
-       
+
       })
     })
   })
-  
+
 
   //---------------------------------------------------------------------------
   // atamHome
@@ -687,8 +687,8 @@ setTimeout(function () {
         console.log(items)
         scheduler.parse(items, "json")
       })
-      REST.Client.getClient(function(res){
-        if(readWriteAllowedIPs.indexOf(res.ip) > -1){
+      REST.Client.getClient(function (res) {
+        if (readWriteAllowedIPs.indexOf(res.ip) > -1) {
           scheduler.config.readonly = false
         }
       })
@@ -733,6 +733,9 @@ setTimeout(function () {
   //   })
   // })
 
-
+  var location = window.location.href
+  if (location.includes("github.io/favorites")) {
+    document.title = "Favorites"
+  }
 
 }, 1000)
