@@ -16,6 +16,8 @@ parser.add_argument(
     "--matlab", help="connect to Matlab session", action="store_true")
 parser.add_argument(
     "--visa", help="load VISA library to connect a device", action="store_true")
+parser.add_argument(
+    "--serialport", help="import SerialPort library to connect a port", action="store_true")
 args = parser.parse_args()
 
 # Installed modules
@@ -28,6 +30,8 @@ if args.jupyternb:
   from notebook import notebookapp
 if args.visa:
   import visa
+if args.serialport:
+  import serial
 
 # locally installed modules
 if args.matlab:
@@ -300,5 +304,68 @@ class Download(Resource):
 
 
 api.add_resource(Download, '/download/<directory>/<file>')
+
+# =============================================================================
+# Serial Port
+# =============================================================================
+serialPorts = {}
+
+class SerialPort(Resource):
+
+  def post(self, port):
+    parser.add_argument('baud')
+    args = parser.parse_args()
+    try:
+      serialPorts[port].close()
+      try:
+        serialPorts[port] = serial.Serial(port, int(args["baud"]), timeout=0)
+        return {}
+      except:
+        return {"error": "Serial Port: POST: Port is not avaliable!"}
+    except:
+      try:
+        serialPorts[port] = serial.Serial(port, int(args["baud"]), timeout=0)
+        return {}
+      except:
+        return {"error": "Serial Port: POST: Port is not avaliable!"}
+
+  def put(self, port):
+    parser.add_argument('buff')
+    args = parser.parse_args()
+    try:
+      serialPorts[port].write((args["buff"] + "\r").encode())
+      serialPorts[port].flush()
+      parser.remove_argument("buff")
+      return {}
+    except:
+      return {"error": "Serial Port: POST: Writing buff to %s failed!" % port}
+
+  def get(self, port):
+    parser.add_argument('buff')
+    args = parser.parse_args()
+    try:
+      res = ""
+      char_next = ""
+      char_prev = ""
+      while serialPorts[port].inWaiting():
+        char_next = serialPorts[port].read().decode()
+        if (char_next == "\n" and char_prev == "\n"):
+          pass
+        else:
+          res += char_next
+      return res.split("\r\n")
+    except:
+      return {"error": "Serial Port: GET: Reading port %s failed!" % port}
+
+  def delete(self, port):
+    try:
+      serialPorts[port].close()
+      del serialPorts[port]
+      return {}
+    except:
+      return {"error": "Serial Port: DEL: Port %s can not be closed.!" % port}
+
+
+api.add_resource(SerialPort, '/serialport/<port>')
 
 app.run(host="0.0.0.0", debug=True)

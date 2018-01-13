@@ -326,14 +326,14 @@ var kodyapHorizontalMeasurementScanArea = {
         cols: [
           {
             cols: [
-              { id: "kodyapHorizontalMeasurementScanAreaX0", view: "text", label: "x0: ", value: kodyapHorizontalScanner.x0, labelWidth: 35 },
+              { id: "kodyapHorizontalMeasurementScanAreaX0", view: "text", label: "x0: ", value: atamHorizontalScanner.x0, labelWidth: 35 },
               { view: "label", label: "mm", width: 50, align: "left" },
             ],
             gravity: 1,
           },
           {
             cols: [
-              { id: "kodyapHorizontalMeasurementScanAreaY0", view: "text", label: "y0: ", value: kodyapHorizontalScanner.y0, labelWidth: 35 },
+              { id: "kodyapHorizontalMeasurementScanAreaY0", view: "text", label: "y0: ", value: atamHorizontalScanner.y0, labelWidth: 35 },
               { view: "label", label: "mm", width: 50, align: "left" },
             ],
             gravity: 1,

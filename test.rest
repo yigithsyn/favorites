@@ -88,3 +88,22 @@ content-type: application/json
 {
   "value": "false"
 }
+
+####################################
+# serialport
+####################################
+####################################
+# Open port
+POST http://127.0.0.1:5000/serialport/COM1?baud=38400
+
+####################################
+# Read port
+GET http://127.0.0.1:5000/serialport/COM1
+
+####################################
+# Write to port
+PUT http://127.0.0.1:5000/serialport/COM1?buff=MH
+
+####################################
+# Disconnect from port
+DELETE http://127.0.0.1:5000/serialport/COM1
